@@ -51,6 +51,7 @@ struct MaterialsView: View {
                         Button("PDF 추가", systemImage: "plus") {
                             model.importPDFViaOpenPanel(courseID: nil, subjectName: group.title)
                         }
+                        .disabled(model.isImportingPDF)
                         .fixedSize()
                     }
                     .controlSize(.small)

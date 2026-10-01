@@ -4,6 +4,30 @@ import PDFKit
 @main
 enum RavilLauncher {
     static func main() {
+        if let flag = CommandLine.arguments.firstIndex(of: "--pdf-performance-regression-check") {
+            guard CommandLine.arguments.indices.contains(flag + 1) else { exit(2) }
+            Task { @MainActor in
+                do {
+                    try await PDFPerformanceRegressionCheck.run(folder: URL(fileURLWithPath: CommandLine.arguments[flag + 1]))
+                    exit(0)
+                } catch { fputs("PDF regression check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--mac-performance-check") {
+            guard CommandLine.arguments.indices.contains(flag + 2) else {
+                fputs("usage: Ravil --mac-performance-check <private-input.json> <report.json>\n", stderr)
+                exit(2)
+            }
+            Task { @MainActor in
+                do {
+                    try await MacPerformanceCheck.run(inputURL: URL(fileURLWithPath: CommandLine.arguments[flag + 1]),
+                        outputURL: URL(fileURLWithPath: CommandLine.arguments[flag + 2]))
+                    exit(0)
+                } catch { fputs("Performance check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
         if CommandLine.arguments.contains("--goodnotes-classification-check") {
             do {
                 try GoodnotesClassificationCheck.run()

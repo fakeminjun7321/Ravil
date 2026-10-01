@@ -14,6 +14,7 @@ struct OverviewView: View {
                         Button("PDF 가져오기", systemImage: "doc.badge.plus") {
                             model.importPDFViaOpenPanel(courseID: nil)
                         }
+                        .disabled(model.isImportingPDF)
                         Button("녹음 파일 가져오기", systemImage: "waveform.badge.plus") {
                             model.importAudioViaOpenPanel(courseID: nil)
                         }

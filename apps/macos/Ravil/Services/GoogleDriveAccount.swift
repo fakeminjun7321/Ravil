@@ -255,6 +255,7 @@ final class GoogleDriveAccount {
     }
 
     init() {
+        guard !AppPaths.isVerificationProfile else { status = "검증용 보관함 · 계정 연결 안 함"; return }
         isConnected = (try? GoogleRefreshTokenStore.read(clientID: clientID)) != nil
         if isConnected { status = "Google 연결 저장됨" }
     }

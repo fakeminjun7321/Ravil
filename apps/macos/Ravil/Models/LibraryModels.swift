@@ -53,7 +53,7 @@ struct TranscriptItem: Identifiable, Hashable {
     }
 }
 
-struct MaterialItem: Identifiable, Hashable {
+struct MaterialItem: Identifiable, Hashable, Sendable {
     let id: String
     let lectureID: String?
     let courseID: String?

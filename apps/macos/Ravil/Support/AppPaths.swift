@@ -1,7 +1,16 @@
 import Foundation
 
 enum AppPaths {
+    /// Set only on a separately signed verification bundle, never the normal app.
+    static var verificationDataDirectory: URL? {
+        guard let path = Bundle.main.object(forInfoDictionaryKey: "RavilVerificationDataDirectory") as? String,
+              path.hasPrefix("/") else { return nil }
+        return URL(fileURLWithPath: path, isDirectory: true)
+    }
+    static var isVerificationProfile: Bool { verificationDataDirectory != nil }
+
     static var applicationSupport: URL {
+        if let verificationDataDirectory { return verificationDataDirectory }
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         return base.appendingPathComponent("Ravil", isDirectory: true)
     }

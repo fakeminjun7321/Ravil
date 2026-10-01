@@ -59,6 +59,14 @@ struct ContentView: View {
             }
             .navigationTitle(navigationTitle)
             .toolbar {
+                if model.isImportingPDF {
+                    ToolbarItem(placement: .status) {
+                        HStack(spacing: 6) {
+                            ProgressView().controlSize(.small)
+                            Text("PDF 가져오는 중").font(.caption)
+                        }
+                    }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button("검색", systemImage: "magnifyingglass") { searchFocused = true }
                         .keyboardShortcut("f")
@@ -66,6 +74,7 @@ struct ContentView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("새로고침", systemImage: "arrow.clockwise") { model.refresh() }
+                        .disabled(model.isImportingPDF)
                         .help("새로고침")
                 }
             }

@@ -78,6 +78,7 @@ final class AppModel {
     var isStartingRecording = false
     var recordingStartedAt: Date?
     var isTranscribing = false
+    var isImportingPDF = false
     var recoverableRecordings: [RecoverableRecording] = []
     var unsavedNoteDraft: UnsavedNoteDraft?
     var activeLectureID: String?
@@ -98,13 +99,13 @@ final class AppModel {
 
     init() {
         google.onImported = { [weak self] in self?.refresh() }
-        if google.automaticEnabled && google.isConnected { google.startPolling() }
+        if !AppPaths.isVerificationProfile && google.automaticEnabled && google.isConnected { google.startPolling() }
         if let data = try? Data(contentsOf: lectureMemoRecoveryURL),
            let pending = try? JSONDecoder().decode([String: String].self, from: data) {
             pendingLectureMemos = pending
         }
         do {
-            database = try LibraryDatabase()
+            database = try LibraryDatabase(importLegacy: !AppPaths.isVerificationProfile)
             refresh()
             discoverUnregisteredRecordings()
         } catch { alert = error.localizedDescription }
@@ -302,13 +303,13 @@ final class AppModel {
         altWorkspaceSynced = false
         altFolderSnapshot = nil
         do {
-            altFolderSnapshot = try AltFolderSnapshotReader.load()
+            altFolderSnapshot = AppPaths.isVerificationProfile ? nil : try AltFolderSnapshotReader.load()
             if let altFolderSnapshot {
                 let result = try database.syncAlt(from: altFolderSnapshot.sourceURL)
                 altWorkspaceSynced = result.discovered == altFolderSnapshot.notes.count
                 altSyncStatus = "Alt \(altFolderSnapshot.workspaceName) 노트 \(result.discovered)개 확인 · 새로 가져온 노트 \(result.imported)개"
             } else {
-                altSyncStatus = "Alt DSHS 폴더 저장소를 찾지 못했습니다"
+                altSyncStatus = AppPaths.isVerificationProfile ? "검증용 보관함" : "Alt DSHS 폴더 저장소를 찾지 못했습니다"
             }
         } catch {
             altSyncStatus = "Alt 폴더 동기화에 문제가 있습니다: \(error.localizedDescription)"
@@ -487,21 +488,43 @@ final class AppModel {
 
     func importPDFViaOpenPanel(courseID: String?, lectureID: String? = nil,
                                subjectName: String? = nil) {
+        guard !isImportingPDF else { return }
         let panel = NSOpenPanel()
         panel.title = "Ravil에 PDF 추가"
         panel.allowedContentTypes = [.pdf]
         panel.allowsMultipleSelection = false
         guard panel.runModal() == .OK, let url = panel.url, let database else { return }
-        do {
-            let material = try database.importLocalPDF(from: url, courseID: courseID,
-                                                       lectureID: lectureID, subjectName: subjectName)
-            refresh()
-            if let lectureID {
-                selectLecture(lectureID)
-            } else {
-                showMaterial(material)
+        let databaseURL = database.location
+        let startSection = section
+        let startSubject = selectedSubjectGroupID
+        let startCourse = selectedCourseFilterID
+        let startLecture = selectedLectureID
+        let startMaterial = selectedMaterialID
+        let startSearch = searchQuery
+        let startPageJump = materialPageJumpID
+        isImportingPDF = true
+        Task { [weak self] in
+            do {
+                let material = try await LocalPDFImporter.shared.importPDF(
+                    from: url, databaseURL: databaseURL, courseID: courseID,
+                    lectureID: lectureID, subjectName: subjectName)
+                guard let self else { return }
+                let stillAtSource = self.section == startSection && self.selectedSubjectGroupID == startSubject
+                    && self.selectedCourseFilterID == startCourse && self.searchQuery == startSearch
+                    && self.materialPageJumpID == startPageJump
+                    && self.selectedLectureID == startLecture && self.selectedMaterialID == startMaterial
+                self.refresh()
+                self.isImportingPDF = false
+                if stillAtSource {
+                    if let lectureID { self.selectLecture(lectureID) }
+                    else { self.showMaterial(material) }
+                }
+            } catch {
+                guard let self else { return }
+                self.isImportingPDF = false
+                self.alert = "PDF를 가져오지 못했습니다: \(error.localizedDescription)"
             }
-        } catch { alert = "PDF를 가져오지 못했습니다: \(error.localizedDescription)" }
+        }
     }
 
     func importPDFForLecture(_ lecture: LectureItem) {
