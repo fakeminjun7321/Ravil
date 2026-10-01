@@ -28,6 +28,16 @@ if [[ ! -d "$app_bundle" || ! -f "$app_plist" || ! -x "$app_executable" ]]; then
   exit 1
 fi
 
+# Distribution bundles must never inherit a local account configuration or a
+# verification profile pointing at a developer's private library copy.
+python3 - "$app_plist" <<'PY_PUBLIC_BUNDLE'
+import plistlib, sys
+with open(sys.argv[1], 'rb') as source:
+    info = plistlib.load(source)
+if info.get('RavilGoogleClientSecret') or info.get('RavilVerificationDataDirectory'):
+    raise SystemExit('Refusing to distribute a bundle with private OAuth configuration or a verification library')
+PY_PUBLIC_BUNDLE
+
 # An old bundle can still be installed locally, but cannot be repackaged without
 # the exact model notices and digest that belong to this source revision.
 source "$project_root/config/local-stt-model.env"
