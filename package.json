@@ -1,0 +1,23 @@
+{
+  "name": "lecture-os",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "alt:list": "node src/alt-adapter.mjs list",
+    "pilot": "node src/local-pilot.mjs",
+    "phase1:import": "node packages/import-alt/src/cli.ts import",
+    "phase1:inspect": "node packages/import-alt/src/cli.ts inspect",
+    "phase2:sync": "node packages/sync-alt/src/cli.ts sync",
+    "phase2:watch": "node packages/sync-alt/src/cli.ts watch",
+    "phase3:configure": "node packages/classification/src/cli.ts configure",
+    "phase3:classify": "node packages/classification/src/cli.ts classify",
+    "phase4:ingest-local": "node packages/materials/src/cli.ts ingest-local",
+    "phase4:catalog-drive": "node packages/materials/src/cli.ts catalog-drive",
+    "phase5:intelligence": "node packages/intelligence/src/cli.ts all",
+    "api": "node apps/api/src/server.ts",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

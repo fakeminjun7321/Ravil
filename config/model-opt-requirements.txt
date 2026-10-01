@@ -1,0 +1,8 @@
+# Local Apple Silicon experiment. The Git revision is the reviewed mlx-audio source.
+mlx-audio[stt] @ git+https://github.com/Blaizzy/mlx-audio.git@94c7716212b2228f178d2f9c7619a591fd1b0b78
+mlx==0.32.3
+mlx-metal==0.32.3
+transformers==5.17.0
+numpy==2.5.3
+soynlp==0.0.493
+cmake==4.1.2

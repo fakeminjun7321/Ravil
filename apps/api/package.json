@@ -1,0 +1,5 @@
+{
+  "name": "@lecture-os/api",
+  "private": true,
+  "type": "module"
+}

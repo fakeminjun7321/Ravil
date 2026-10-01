@@ -1,0 +1,5 @@
+{
+  "name": "@lecture-os/sync-alt",
+  "private": true,
+  "type": "module"
+}

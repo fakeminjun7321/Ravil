@@ -1,0 +1,23 @@
+{
+  "semester": {
+    "name": "2026-2학기",
+    "startsAt": "2026-08-17",
+    "endsAt": "2026-12-31"
+  },
+  "courses": [
+    {
+      "name": "자료구조",
+      "professorName": "김OO",
+      "schedules": [
+        {
+          "isoWeekday": 1,
+          "startsAt": "13:30",
+          "endsAt": "14:45",
+          "timezone": "Asia/Seoul",
+          "location": "공학관 302호",
+          "source": "manual"
+        }
+      ]
+    }
+  ]
+}

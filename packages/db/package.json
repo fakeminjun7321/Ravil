@@ -1,0 +1,5 @@
+{
+  "name": "@lecture-os/db",
+  "private": true,
+  "type": "module"
+}
