@@ -13,9 +13,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.6.3</string>
+	<string>0.7.0</string>
 	<key>CFBundleVersion</key>
-	<string>12</string>
+	<string>13</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>NSPrincipalClass</key>
@@ -28,5 +28,9 @@
 	<string>Ravil.icns</string>
 	<key>RavilGoogleClientID</key>
 	<string>848810050161-t74ropjsk3m8vkv67aovprgna63o92ku.apps.googleusercontent.com</string>
+	<key>NSAudioCaptureUsageDescription</key>
+	<string>온라인 강의의 컴퓨터 소리를 녹음하기 위해 오디오 기록 권한을 사용합니다.</string>
+	<key>NSScreenCaptureUsageDescription</key>
+	<string>컴퓨터 소리를 수집하기 위해 화면 및 오디오 기록 권한을 사용합니다. 화면 영상은 저장하지 않습니다.</string>
 </dict>
 </plist>

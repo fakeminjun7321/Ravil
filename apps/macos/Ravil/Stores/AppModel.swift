@@ -21,10 +21,11 @@ struct UnsavedNoteDraft: Codable {
 @MainActor @Observable
 final class AppModel {
     enum Section: String, CaseIterable, Identifiable {
-        case overview = "홈", lectures = "강의", materials = "자료", notes = "위키", exam = "시험", capture = "녹음", codex = "Codex", settings = "설정"
+        case brain = "세컨드 브레인", overview = "홈", lectures = "강의", materials = "자료", notes = "위키", exam = "시험", capture = "녹음", codex = "Codex", settings = "설정"
         var id: String { rawValue }
         var icon: String {
             switch self {
+            case .brain: return "brain"
             case .overview: return "square.grid.2x2"
             case .lectures: return "waveform"
             case .materials: return "doc.text"
@@ -39,6 +40,7 @@ final class AppModel {
 
     var section: Section = .overview
     var codex = CodexAppServerClient()
+    var brain = BrainStore()
     var google = GoogleDriveAccount()
     var lectures: [LectureItem] = []
     var materials: [MaterialItem] = []
@@ -85,11 +87,24 @@ final class AppModel {
     var modelPath: String = AppPaths.resolvedModelPath(saved: UserDefaults.standard.string(forKey: "RavilWhisperModelPath"))
     var executablePath: String = AppPaths.resolvedWhisperCLIPath(saved: UserDefaults.standard.string(forKey: "RavilWhisperExecutablePath"))
 
-    private let recorder = RecorderService()
+    let recorder = RecorderService()
+    var live = LiveTranscriber()
+    var recordingInput: RecordingInput = .microphone
+    var recordingDeviceID: String? = nil
+    var livePreviewEnabled = true
+    var recordingLevel: Float = 0
+    var recordingElapsed = 0.0
+    var isRecordingPaused = false
+    var isStoppingRecording = false
+    var classroomMaterialID: String?
+    var classroomPage = 1
+    var lectureBookmarks: [LectureBookmark] = []
+    var isSeparatingSpeakers = false
+    var brainLectureID: String?
     private var player: AVPlayer?
     private var playerTimeObserver: Any?
     private var loadedAudioPath: String?
-    private var database: LibraryDatabase?
+    var database: LibraryDatabase?
     private var draftRecoveryURL: URL {
         AppPaths.applicationSupport.appendingPathComponent("unsaved-note-draft.json")
     }
@@ -344,6 +359,7 @@ final class AppModel {
         guard let database else { return }
         do {
             transcript = try database.transcript(for: id)
+            lectureBookmarks = try database.bookmarks(for: id)
             altSlideSource = try database.altSlideSource(for: id)
             intelligence = try database.intelligence(for: id)
             providerSummary = try database.providerSummary(for: id)
@@ -662,31 +678,73 @@ final class AppModel {
     }
 
     func beginRecording() {
-        guard !isStartingRecording, !isRecording else { return }
+        guard !isStartingRecording, !isRecording, !isStoppingRecording, !isTranscribing else { return }
         isStartingRecording = true
+        let title = recordingTitle, courseID = recordingCourseID
+        recorder.pipeline.onLevel = { [weak self] level, elapsed in
+            Task { @MainActor in self?.recordingLevel = level; self?.recordingElapsed = elapsed }
+        }
+        recorder.pipeline.onWindow = { [weak self] url, start, end in
+            Task { @MainActor in self?.live.submit(url: url, start: start, end: end) }
+        }
+        recorder.pipeline.onError = { [weak self] message in
+            Task { @MainActor in
+                guard let self else { return }
+                self.alert = message
+                if self.isRecording { self.finishRecording() }
+            }
+        }
         Task {
             defer { isStartingRecording = false }
             do {
-                _ = try await recorder.start()
-                isRecording = true
+                if livePreviewEnabled && modelReady {
+                    live.start(worker: WhisperTranscriber(executable: URL(fileURLWithPath: executablePath), model: URL(fileURLWithPath: modelPath)),
+                               options: TranscriptionOptions(language: transcriptionLanguage, translateToEnglish: translateTranscription, keywordPrompt: keywordPrompt))
+                }
+                let url = try await recorder.start(input: recordingInput, deviceID: recordingDeviceID)
+                isRecording = true; isRecordingPaused = false
                 recordingStartedAt = recorder.startedAt
-            } catch { alert = error.localizedDescription }
+                activeLectureID = try database?.addRecording(title: title, courseID: courseID, audioURL: url, startedAt: recorder.startedAt ?? Date())
+                if let id = activeLectureID { refresh(); selectLecture(id); section = .capture }
+            } catch {
+                isRecording = recorder.isRecording
+                if !isRecording { await live.stop() }
+                alert = error.localizedDescription
+            }
         }
     }
 
+    func pauseRecording() {
+        guard isRecording, !isStoppingRecording else { return }
+        isRecordingPaused.toggle(); recorder.setPaused(isRecordingPaused)
+    }
+
     func finishRecording() {
-        do {
-            let result = try recorder.stop()
-            isRecording = false
-            recordingStartedAt = nil
-            let pending = RecoverableRecording(url: result.url, startedAt: result.startedAt,
-                                               title: recordingTitle, courseID: recordingCourseID)
-            recoverableRecordings.append(pending)
-            recordingTitle = ""
-            registerRecording(pending)
-        } catch {
-            isRecording = recorder.isRecording
-            alert = error.localizedDescription
+        guard isRecording, !isStoppingRecording else { return }
+        isStoppingRecording = true
+        Task {
+            defer { isStoppingRecording = false }
+            do {
+                let result = try await recorder.stop()
+                isRecording = false; isRecordingPaused = false; recordingStartedAt = nil
+                await live.stop(); recorder.pipeline.discardTemporaryWindows()
+                if let id = activeLectureID {
+                    let size = (try? FileManager.default.attributesOfItem(atPath: result.url.path)[.size] as? Int) ?? 0
+                    try database?.execute("UPDATE audio_assets SET size_bytes = ? WHERE lecture_id = ?", values: [String(size), id])
+                    transcribe(lectureID: id, audioURL: result.url)
+                    selectLecture(id)
+                } else {
+                    let pending = RecoverableRecording(url: result.url, startedAt: result.startedAt,
+                                                       title: recordingTitle, courseID: recordingCourseID)
+                    recoverableRecordings.append(pending); registerRecording(pending)
+                }
+                recordingTitle = ""
+            } catch {
+                isRecording = recorder.isRecording
+                await live.stop(); recorder.pipeline.discardTemporaryWindows()
+                alert = error.localizedDescription
+                discoverUnregisteredRecordings()
+            }
         }
     }
 
@@ -747,7 +805,7 @@ final class AppModel {
     }
 
     private func transcribe(lectureID: String, audioURL: URL, language: String? = nil) {
-        guard !isTranscribing else { return }
+        guard !isTranscribing, !isRecording else { return }
         isTranscribing = true
         let worker = WhisperTranscriber(executable: URL(fileURLWithPath: executablePath),
                                         model: URL(fileURLWithPath: modelPath))

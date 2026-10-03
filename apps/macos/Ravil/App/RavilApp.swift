@@ -4,6 +4,37 @@ import PDFKit
 @main
 enum RavilLauncher {
     static func main() {
+        if let flag = CommandLine.arguments.firstIndex(of: "--live-preview-check"), CommandLine.arguments.indices.contains(flag + 2) {
+            Task { @MainActor in
+                do { try await LivePreviewCheck.run(audio: URL(fileURLWithPath: CommandLine.arguments[flag + 1]), output: URL(fileURLWithPath: CommandLine.arguments[flag + 2])); exit(0) }
+                catch { fputs("Live preview check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--classroom-render-check"), CommandLine.arguments.indices.contains(flag + 1) {
+            let application = NSApplication.shared
+            application.setActivationPolicy(.prohibited)
+            Task { @MainActor in
+                do { try await ClassroomRenderCheck.run(folder: URL(fileURLWithPath: CommandLine.arguments[flag + 1])); exit(0) }
+                catch { fputs("Render check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            application.run()
+            return
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--brain-integration-check"), CommandLine.arguments.indices.contains(flag + 1) {
+            Task { @MainActor in
+                do { try await BrainIntegrationCheck.run(folder: URL(fileURLWithPath: CommandLine.arguments[flag + 1])); exit(0) }
+                catch { fputs("Brain integration check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--classroom-check"), CommandLine.arguments.indices.contains(flag + 1) {
+            Task { @MainActor in
+                do { try await ClassroomCheck.run(folder: URL(fileURLWithPath: CommandLine.arguments[flag + 1])); exit(0) }
+                catch { fputs("Classroom check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
         if let flag = CommandLine.arguments.firstIndex(of: "--pdf-performance-regression-check") {
             guard CommandLine.arguments.indices.contains(flag + 1) else { exit(2) }
             Task { @MainActor in
