@@ -3,6 +3,7 @@ import SwiftUI
 struct PDFMaterialPreview: View {
     let url: URL
     let initialPage: Int
+    let onPageChange: ((Int) -> Void)?
     @State private var pageIndex: Int
     @State private var pageCount = 0
     @State private var pageImage: CGImage?
@@ -10,7 +11,8 @@ struct PDFMaterialPreview: View {
 
     private struct Request: Hashable { let url: URL; let index: Int }
 
-    init(url: URL, initialPage: Int = 1) {
+    init(url: URL, initialPage: Int = 1, onPageChange: ((Int) -> Void)? = nil) {
+        self.onPageChange = onPageChange
         self.url = url
         self.initialPage = initialPage
         _pageIndex = State(initialValue: max(initialPage - 1, 0))
@@ -52,6 +54,7 @@ struct PDFMaterialPreview: View {
                 pageCount = rendered.pageCount
                 pageIndex = rendered.pageIndex
                 pageImage = rendered.image
+                onPageChange?(rendered.pageIndex + 1)
                 isRendering = false
             } catch {
                 guard !Task.isCancelled else { return }

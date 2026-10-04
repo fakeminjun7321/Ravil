@@ -46,6 +46,7 @@ struct ContentView: View {
                     SearchResultsView(model: model)
                 } else {
                     switch model.section {
+                    case .brain: BrainView(model: model)
                     case .overview: OverviewView(model: model)
                     case .lectures: LecturesView(model: model)
                     case .materials: MaterialsView(model: model)
@@ -56,6 +57,9 @@ struct ContentView: View {
                     case .settings: PreferencesView(model: model)
                     }
                 }
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if model.isRecording { RecordingStatusBar(model: model) }
             }
             .navigationTitle(navigationTitle)
             .toolbar {
@@ -155,6 +159,7 @@ struct ContentView: View {
                     navigationItem(.lectures)
                     navigationItem(.materials)
                     navigationItem(.notes)
+                    navigationItem(.brain)
                     navigationItem(.exam)
                 }
                 Section("과목") {

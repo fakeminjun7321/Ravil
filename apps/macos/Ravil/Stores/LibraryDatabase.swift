@@ -30,6 +30,7 @@ final class LibraryDatabase {
         try execute("PRAGMA foreign_keys = ON")
         try execute("PRAGMA busy_timeout = 5000")
         try createTables()
+        try createClassroomTables()
         try FileManager.default.setAttributes([.posixPermissions: NSNumber(value: 0o600)], ofItemAtPath: location.path)
     }
 

@@ -13,6 +13,7 @@ struct WhisperTranscriber {
     let executable: URL
     let model: URL
     var outputDirectory: URL = AppPaths.transcriptionOutput
+    var timeout: TimeInterval = 7200
 
     var isAvailable: Bool {
         FileManager.default.isExecutableFile(atPath: executable.path)
@@ -55,8 +56,14 @@ struct WhisperTranscriber {
         }
         process.standardOutput = FileHandle.nullDevice
         process.standardError = FileHandle.nullDevice
+        let finished = DispatchSemaphore(value: 0)
+        process.terminationHandler = { _ in finished.signal() }
         try process.run()
-        process.waitUntilExit()
+        // A short preview must not wait forever or keep an app shutdown pending.
+        if finished.wait(timeout: .now() + timeout) == .timedOut {
+            process.terminate()
+            throw TranscriptionError.processFailed(-1)
+        }
         guard process.terminationStatus == 0 else { throw TranscriptionError.processFailed(process.terminationStatus) }
         let json = outputBase.appendingPathExtension("json")
         let data = try Data(contentsOf: json)

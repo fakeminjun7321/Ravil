@@ -35,7 +35,7 @@ struct LectureDetailView: View {
                     Group {
                         switch tab {
                         case .note:
-                            LectureNoteEditor(model: model, lecture: lecture)
+                            ClassroomEditor(model: model, lecture: lecture)
                                 .id(lecture.id)
                         case .summary:
                             LectureSummaryView(model: model, lecture: lecture)
@@ -82,7 +82,17 @@ struct LectureDetailView: View {
                            systemImage: "text.bubble") {
                         showTranscriptionOptions = true
                     }
-                    .disabled(model.isTranscribing || !model.modelReady)
+                    .disabled(model.isTranscribing || model.isRecording || !model.modelReady)
+                }
+                Menu("내보내기") {
+                    ForEach(LectureExportFormat.allCases) { format in
+                        Button(format.rawValue) { model.exportLecture(lecture, format: format) }
+                            .disabled((format == .audio && lecture.audioPath == nil) || (model.isRecording && model.activeLectureID == lecture.id))
+                    }
+                }
+                .fixedSize()
+                Button("자료 종합 질문") {
+                    model.brainLectureID = lecture.id; model.section = .brain
                 }
                 Button("PDF 연결", systemImage: "doc.badge.plus") {
                     model.importPDFForLecture(lecture)
@@ -97,7 +107,7 @@ struct LectureDetailView: View {
     }
 }
 
-private struct LectureNoteEditor: View {
+struct LectureNoteEditor: View {
     let model: AppModel
     let lecture: LectureItem
     @State private var draft: String

@@ -13,6 +13,27 @@ struct CaptureView: View {
     }
 
     var body: some View {
+        if model.isRecording, let lecture = model.lectures.first(where: { $0.id == model.activeLectureID }) {
+            VStack(spacing: 0) {
+                Text(lecture.title).font(.title2).frame(maxWidth: .infinity, alignment: .leading).padding(16)
+                ClassroomEditor(model: model, lecture: lecture)
+                Divider()
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(model.live.status).font(.caption).foregroundStyle(.secondary)
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            ForEach(Array(model.live.phrases.enumerated()), id: \.offset) { _, phrase in
+                                Text("[\(TranscriptDock.clock(Double(phrase.offsets.from) / 1000))] \(phrase.text)")
+                                    .frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
+                            }
+                        }
+                    }
+                }.padding(14).frame(height: 180)
+            }
+        } else { setup }
+    }
+
+    private var setup: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 HStack {
@@ -35,6 +56,20 @@ struct CaptureView: View {
                             Text(course.name).tag(Optional(course.id))
                         }
                     }
+                    Picker("녹음할 소리", selection: $model.recordingInput) {
+                        ForEach(RecordingInput.allCases) { input in Text(input.rawValue).tag(input) }
+                    }
+                    if model.recordingInput != .system {
+                        Picker("마이크", selection: $model.recordingDeviceID) {
+                            Text("기본 마이크").tag(String?.none)
+                            ForEach(RecorderService.devices()) { device in Text(device.name).tag(Optional(device.id)) }
+                        }
+                    }
+                    if model.recordingInput != .microphone {
+                        Text("컴퓨터 소리 수집에는 macOS 화면 및 오디오 기록 권한이 필요합니다. 화면 영상은 저장하지 않습니다.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Toggle("녹음 중 전사 미리보기", isOn: $model.livePreviewEnabled)
                     Picker("언어", selection: $model.transcriptionLanguage) {
                         Text("자동 감지").tag("auto")
                         Text("한국어").tag("ko")
