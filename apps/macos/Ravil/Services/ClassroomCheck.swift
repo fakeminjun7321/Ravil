@@ -54,6 +54,15 @@ enum ClassroomCheck {
         try require(updated[0].startMilliseconds == original.startMilliseconds && updated[0].text == "에너지 정정된 설명" && updated[0].speaker == "교수", "transcript edit persistence")
         try require(try reopened.rows("SELECT * FROM transcript_edits WHERE segment_id = ?", values: [original.id]).count == 2, "edit history")
         try require(try reopened.bookmarks(for: id) == [bookmark], "bookmark source/page/time persistence")
+        try db.editTranscript(segmentID: updated[1].id, text: updated[1].text, speaker: "교수")
+        let editCount = try db.rows("SELECT COUNT(*) AS n FROM transcript_edits").first?["n"]
+        try db.execute("CREATE TRIGGER reject_rename BEFORE UPDATE ON transcript_segments WHEN NEW.speaker_id = 'rollback-check' AND OLD.ordinal = 1 BEGIN SELECT RAISE(ABORT, 'injected rename failure'); END")
+        var renameRejected = false
+        do { try db.renameSpeaker(lectureID: id, old: "교수", new: "rollback-check") }
+        catch { renameRejected = true }
+        try require(try renameRejected && db.transcript(for: id).prefix(2).allSatisfy { $0.speaker == "교수" }, "speaker rename rollback")
+        try require(try db.rows("SELECT COUNT(*) AS n FROM transcript_edits").first?["n"] == editCount, "rolled-back edit history")
+        try db.execute("DROP TRIGGER reject_rename")
         var rejected = false
         do { try db.saveBookmark(LectureBookmark(lectureID: id, milliseconds: -1, materialID: nil, page: nil, note: "bad")) }
         catch { rejected = true }
@@ -85,7 +94,7 @@ enum ClassroomCheck {
         try require(try db.bookmarks(for: id) == [bookmark], "bookmark survives re-transcription")
         try AudioPipelineCheck.run(folder: folder)
         let report: [String: Any] = ["resamplingAndPause": true, "pcmCheckpoint": true, "mixAndSilence": true, "previewOffsets": true,
-            "bookmarkPersistence": true, "transcriptHistory": true, "crossSourceRetrieval": true,
+            "bookmarkPersistence": true, "transcriptHistory": true, "speakerRenameRollback": true, "crossSourceRetrieval": true,
             "answerEvidencePersistence": true, "exportMarkdownPDFSRTVTT": true, "syntheticAcousticClusters": true,
             "microphoneStarted": false, "systemCaptureStarted": false, "liveAIServiceCalled": false]
         try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]).write(to: folder.appendingPathComponent("report.json"))

@@ -680,6 +680,10 @@ final class AppModel {
     func beginRecording() {
         guard !isStartingRecording, !isRecording, !isStoppingRecording, !isTranscribing else { return }
         isStartingRecording = true
+        // A registration failure must never reuse the preceding recording's ID.
+        activeLectureID = nil
+        recordingElapsed = 0
+        recordingLevel = 0
         let title = recordingTitle, courseID = recordingCourseID
         recorder.pipeline.onLevel = { [weak self] level, elapsed in
             Task { @MainActor in self?.recordingLevel = level; self?.recordingElapsed = elapsed }

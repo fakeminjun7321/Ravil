@@ -36,3 +36,7 @@
 - **Not verified / 미검증:** 실제 마이크, 시스템 오디오 권한·실수집·장치 분리, 교실 화자 정확도, 장시간 실시간 지연·발열·배터리, 전경 GUI 조작 전체. 마이크 테스트는 사용자 요청으로 제외했다.
 
 검사 명령: `--classroom-check <new-folder>`, `--brain-integration-check <new-folder>`(실제 Codex 요청 1회), `--live-preview-check <generated.wav> <new-folder>`, `--classroom-render-check <output-folder>`(사본 프로필 전용 비표시 렌더).
+
+## 2026-10-04 후속 점검
+
+새 녹음 시작 시 이전 강의 ID·시간·음량을 초기화해 DB 등록 실패가 이전 강의와 연결되지 않도록 했다. 화자 이름 일괄 변경은 하나의 트랜잭션으로 묶고, 중간 SQL 실패를 주입해 화자 값과 수정 이력이 함께 되돌아오는 검사를 통과했다. 기존 공개 0.6.3과 설치 앱은 이 변경으로 교체하지 않는다.

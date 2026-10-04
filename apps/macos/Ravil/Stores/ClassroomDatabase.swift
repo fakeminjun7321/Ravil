@@ -38,26 +38,35 @@ extension LibraryDatabase {
     }
 
     func editTranscript(segmentID: String, text: String, speaker: String?) throws {
-        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !clean.isEmpty, let old = try rows("SELECT text, speaker_id FROM transcript_segments WHERE id = ?", values: [segmentID]).first else {
-            throw DatabaseError.sqlite("수정할 전사와 내용을 확인해 주세요")
-        }
-        let name = speaker?.trimmingCharacters(in: .whitespacesAndNewlines)
         try execute("BEGIN IMMEDIATE")
         do {
-            try execute("INSERT INTO transcript_edits VALUES (?, ?, ?, ?, ?, ?, ?)", values: [UUID().uuidString, segmentID, old["text"], clean, old["speaker_id"], name, ISO8601DateFormatter().string(from: Date())])
-            try execute("UPDATE transcript_segments SET text = ?, speaker_id = ? WHERE id = ?", values: [clean, name?.isEmpty == true ? nil : name, segmentID])
+            try recordTranscriptEdit(segmentID: segmentID, text: text, speaker: speaker)
             try execute("COMMIT")
         } catch { try? execute("ROLLBACK"); throw error }
     }
 
+    private func recordTranscriptEdit(segmentID: String, text: String, speaker: String?) throws {
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty, let old = try rows("SELECT text, speaker_id FROM transcript_segments WHERE id = ?", values: [segmentID]).first else {
+            throw DatabaseError.sqlite("수정할 전사와 내용을 확인해 주세요")
+        }
+        let value = speaker?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = value?.isEmpty == true ? nil : value
+        try execute("INSERT INTO transcript_edits VALUES (?, ?, ?, ?, ?, ?, ?)", values: [UUID().uuidString, segmentID, old["text"], clean, old["speaker_id"], name, ISO8601DateFormatter().string(from: Date())])
+        try execute("UPDATE transcript_segments SET text = ?, speaker_id = ? WHERE id = ?", values: [clean, name, segmentID])
+    }
+
     func renameSpeaker(lectureID: String, old: String, new: String) throws {
-        let segments = try transcript(for: lectureID).filter { $0.speaker == old }
-        for s in segments { try editTranscript(segmentID: s.id, text: s.text, speaker: new) }
+        try execute("BEGIN IMMEDIATE")
+        do {
+            let segments = try transcript(for: lectureID).filter { $0.speaker == old }
+            for s in segments { try recordTranscriptEdit(segmentID: s.id, text: s.text, speaker: new) }
+            try execute("COMMIT")
+        } catch { try? execute("ROLLBACK"); throw error }
     }
 
     func brainSources(query: String, lectureID: String? = nil) throws -> [BrainSource] {
-        // Parameterized literal LIKE; deterministic, local retrieval with source locations.
+        // Deterministic, local keyword retrieval with persistent source locations.
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || lectureID != nil else { return [] }
         let words = Array(query.split(whereSeparator: { $0.isWhitespace }).prefix(8)).map(String.init)
         let tokens = words.isEmpty ? [""] : words
