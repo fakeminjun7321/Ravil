@@ -96,9 +96,21 @@ struct PreferencesView: View {
             Section("저장 공간") {
                 StorageUsageView()
             }
+            Section("로컬 AI 모델") {
+                LocalModelConnectionControls(client: model.localAI)
+            }
             Section("Codex") {
                 TextField("Codex 실행 파일의 절대 경로", text: $model.codex.executablePath)
                     .textFieldStyle(.roundedBorder)
+                HStack {
+                    Button("설치된 Codex 감지") { if !model.codex.connected { model.codex.executablePath = CodexAppServerClient.defaultExecutablePath } }
+                        .disabled(model.codex.connected || model.codex.connecting)
+                    Button(model.codex.connected || model.codex.connecting ? "연결 끊기" : "연결 확인") {
+                        if model.codex.connected || model.codex.connecting { model.codex.disconnect() } else { model.codex.connect() }
+                    }
+                    Text(model.codex.status).font(.caption).foregroundStyle(.secondary)
+                }
+                if let error = model.codex.errorMessage { Text(error).font(.caption).foregroundStyle(.red) }
                 Text("이 기기의 Codex 로그인 계정을 사용합니다.")
                     .font(.caption).foregroundStyle(.secondary)
             }

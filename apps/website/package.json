@@ -1,0 +1,50 @@
+{
+  "name": "@ravil/website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build",
+    "check": "astro check && tsc -p functions/tsconfig.json",
+    "preview": "astro preview --host 127.0.0.1",
+    "dev:connected": "wrangler pages dev dist --port 8789",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name ravil-website --branch workspace-preview --commit-dirty=true",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name ravil-website --branch main --commit-dirty=true"
+  },
+  "dependencies": {
+    "@tabler/icons": "3.49.0",
+    "@tiptap/core": "3.31.4",
+    "@tiptap/extension-image": "3.31.4",
+    "@tiptap/extension-placeholder": "3.31.4",
+    "@tiptap/extension-table": "3.31.4",
+    "@tiptap/extension-task-item": "3.31.4",
+    "@tiptap/extension-task-list": "3.31.4",
+    "@tiptap/markdown": "3.31.4",
+    "@tiptap/starter-kit": "3.31.4",
+    "astro": "7.3.5",
+    "docx": "9.8.1",
+    "fflate": "0.8.3",
+    "katex": "0.19.0",
+    "mathjax-full": "3.2.2",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299",
+    "pdfmake": "0.3.11",
+    "pretendard": "1.3.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@cloudflare/workers-types": "5.20261004.1",
+    "fake-indexeddb": "6.2.5",
+    "tsx": "4.23.15",
+    "typescript": "^5.9.3",
+    "wrangler": "4.145.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.9.12",
+    "http-cache-semantics": "4.3.0"
+  }
+}

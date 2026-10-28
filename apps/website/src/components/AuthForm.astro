@@ -1,0 +1,26 @@
+---
+import '../styles/auth.css';
+interface Props { signup?: boolean }
+const {signup = false} = Astro.props;
+---
+<section class="auth-page studio-auth" aria-labelledby="auth-title">
+  <div class="studio-auth-story"><p class="studio-kicker">MY RECORDS, CONTINUED.</p><h2>내 기록을 이어서.</h2><p>남겨둔 생각과 경험을 다시 꺼내고,<br />다음 생각과 행동으로 이어가세요.</p><div class="studio-auth-examples" aria-label="설명용 기록 예시"><article><span>독서 · 예시 기록</span><h3>집중이 잘 되는 환경</h3><p>의지보다 환경에서 시작되는 것 같다.<br />다음 작업엔 휴대폰을 책상 밖에 두어 보기.</p></article><span class="studio-auth-connection" aria-hidden="true">↳</span><article><span>프로젝트 · 예시 기록</span><h3>이번 주 생각</h3><p>첫 화면 문구를 조금 더 간결하게.<br />읽던 책의 아이디어와 함께 정리해 보자.</p></article></div><a href="/features/">RAVIL 살펴보기 ↗</a></div>
+  <div class="auth-paper">
+  <div class="auth-intro">
+    <p class="auth-eyebrow">RAVIL ACCOUNT</p>
+    <h1 id="auth-title">{signup ? '내 공간 만들기' : '다시 만나서 반가워요.'}</h1>
+    <p>같은 계정으로 Mac과 웹의 기록을 이어가세요.</p>
+  </div>
+  <form id="auth-form" class="auth-form" data-signup={String(signup)}>
+    {signup && <label for="auth-name">이름<input id="auth-name" name="name" autocomplete="name" required maxlength="80" /></label>}
+    <label for="auth-email">이메일<input id="auth-email" name="email" type="email" autocomplete="username" inputmode="email" required /></label>
+    <label for="auth-password">비밀번호<input id="auth-password" name="password" type="password" autocomplete={signup ? 'new-password' : 'current-password'} minlength="12" required aria-describedby={signup ? 'password-help' : undefined} /></label>
+    {signup && <p class="auth-help" id="password-help">비밀번호는 12자 이상으로 설정해 주세요.</p>}
+    <p id="auth-error" class="auth-error" role="alert" hidden></p>
+    <button type="submit" class="button auth-submit">{signup ? '계정 만들기' : '로그인'}</button>
+    <p class="auth-switch">{signup ? '이미 계정이 있나요?' : '처음 사용하나요?'} <a id="auth-switch" href={signup ? '/login/' : '/signup/'}>{signup ? '로그인' : '계정 만들기'}</a></p>
+    <p class="auth-foot">같은 계정으로 로그인하면 내 기록이 연결돼요.<br /><a href="/privacy/">데이터 안내</a></p>
+  </form>
+  </div>
+</section>
+<script>import '../auth/form.ts';</script>

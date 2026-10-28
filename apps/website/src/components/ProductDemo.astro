@@ -1,0 +1,120 @@
+---
+import Icon from './Icon.astro';
+const folders = ['캘큘', '천문', '미방', '일물', '현물', '국어', '영어', '물실', '프실'];
+const transcripts = [
+  { time: '00:00', text: '오늘은 뉴턴의 운동 법칙을 살펴보겠습니다.' },
+  { time: '02:14', text: '먼저, 제1법칙은 관성의 법칙이라고도 불립니다.' },
+  { time: '05:03', text: '알짜힘이 0이면 물체는 정지해 있거나 등속 직선 운동을 합니다.' },
+  { time: '08:27', text: '다음은 제2법칙입니다. 알짜힘은 질량과 가속도의 곱입니다.' },
+  { time: '12:11', text: '같은 힘을 가하면 질량이 클수록 가속도는 작아집니다.' },
+  { time: '15:42', text: '제3법칙의 작용과 반작용은 서로 다른 물체에 작용합니다.' }
+];
+---
+<section class="demo-section container" id="demo" aria-label="RAVIL 제품 데모">
+  <div class="demo-tabs" role="tablist" aria-label="제품 데모 화면">
+    {['자료', '강의', '복습'].map((label, i) => <button type="button" role="tab" id={`tab-${i}`} aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${i}`} tabindex={i === 0 ? 0 : -1} data-demo-tab={i}>{label}</button>)}
+  </div>
+  <div class="demo-stage">
+    <div class="app-window">
+      <aside class="app-sidebar" aria-label="앱 구성 예제">
+        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <strong class="app-brand">Ravil</strong>
+        <span class="sidebar-caption">내 보관함</span>
+        <div class="sidebar-nav">
+          <span class="selected" data-side-nav="0"><Icon name="file" size={18} />자료</span>
+          <span data-side-nav="1"><Icon name="mic" size={18} />강의</span>
+          <span><Icon name="note" size={18} />노트</span>
+          <span data-side-nav="2"><Icon name="cards" size={18} />시험 범위</span>
+        </div>
+        <div class="sidebar-folders"><span class="sidebar-caption">과목</span>{folders.map(folder => <span><Icon name="folder" size={17} />{folder}</span>)}</div>
+      </aside>
+      <div class="app-panels">
+        <div id="panel-0" role="tabpanel" aria-labelledby="tab-0" data-demo-panel="0" class="demo-panel materials-panel">
+          <div class="material-list">
+            <div class="app-panel-heading"><h3>자료</h3><Icon name="search" size={19} /></div>
+            <p class="app-course">일반물리학</p>
+            <div class="table-heading"><span>이름</span><span>수정일</span></div>
+            <button class="material-row active" type="button" data-material="0" aria-pressed="true"><Icon name="file" size={21} /><span>역학 학습지</span><time datetime="2026-09-28">09.28</time></button>
+            <button class="material-row" type="button" data-material="1" aria-pressed="false"><Icon name="file" size={21} /><span>수업 필기</span><time datetime="2026-09-26">09.26</time></button>
+            <button class="material-row" type="button" data-material="2" aria-pressed="false"><Icon name="file" size={21} /><span>연습문제</span><time datetime="2026-09-24">09.24</time></button>
+            <p class="app-list-note">자료를 선택해 내용을 살펴보세요.</p>
+          </div>
+          <div class="document-preview" aria-live="polite">
+            <div class="document-toolbar"><span>PDF 미리보기</span><span data-page-label>1 / 12</span></div>
+            <article class="demo-document" data-document="0">
+              <span class="document-kicker">일반물리학 · 역학</span><h4>뉴턴의 운동 법칙</h4>
+              <section><h5>01. 관성의 법칙</h5><p>알짜힘이 0이면 물체는 정지 상태 또는 등속 직선 운동을 유지한다.</p><div class="formula">ΣF = 0 <span>→</span> v = 일정</div></section>
+              <section><h5>02. 가속도의 법칙</h5><p>물체에 작용하는 알짜힘은 질량과 가속도의 곱과 같다.</p><div class="formula">ΣF = ma</div><p class="document-note">F: 알짜힘 (N) &nbsp; m: 질량 (kg) &nbsp; a: 가속도 (m/s²)</p></section>
+              <section><h5>03. 작용과 반작용의 법칙</h5><p>두 물체가 서로에게 가하는 힘은 크기가 같고 방향이 반대이다.</p><div class="formula">F<sub>AB</sub> = −F<sub>BA</sub></div></section>
+            </article>
+            <article class="demo-document" data-document="1" hidden>
+              <span class="document-kicker">일반물리학 · 수업 필기</span><h4>힘을 더할 때의 기준</h4><section><h5>물체 하나를 먼저 정하기</h5><p>자유 물체도에는 선택한 물체에 작용하는 힘만 표시한다. 작용과 반작용은 서로 다른 물체에 작용하므로 한 물체의 알짜힘에서 서로 상쇄되지 않는다.</p><div class="formula">ΣF<sub>x</sub> = ma<sub>x</sub></div></section><section><h5>좌표 방향을 먼저 정하기</h5><p>힘과 가속도에 같은 부호 기준을 적용한다. 운동 방향과 힘의 방향은 항상 같지는 않다.</p></section>
+            </article>
+            <article class="demo-document" data-document="2" hidden>
+              <span class="document-kicker">일반물리학 · 연습문제</span><h4>배운 내용 확인하기</h4><section><h5>01. 알짜힘과 가속도</h5><p>질량이 2 kg인 물체에 6 N의 알짜힘이 작용한다. 물체의 가속도 크기는?</p><div class="formula">a = F / m = 3 m/s²</div></section><section><h5>02. 작용과 반작용</h5><p>책상이 책을 위로 밀어 주는 힘의 반작용은 무엇인가?</p><p>책이 책상을 아래로 누르는 힘이다.</p></section>
+            </article>
+          </div>
+        </div>
+        <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" data-demo-panel="1" class="demo-panel lecture-panel" hidden>
+          <div class="lecture-header"><span class="document-kicker">일반물리학 · 공개용 예제</span><h3>뉴턴의 운동 법칙</h3><p>수업의 흐름을 시간과 함께 다시 살펴보세요.</p></div>
+          <label class="transcript-search"><Icon name="search" size={18} /><input type="search" placeholder="강의 기록에서 검색" aria-label="예제 강의 기록 검색" /></label>
+          <div class="transcript-list" aria-live="polite">{transcripts.map(({ time, text }) => <div class="transcript-row" data-transcript><time>{time}</time><p>{text}</p></div>)}</div>
+          <p class="search-empty" hidden>일치하는 기록이 없습니다. 다른 단어로 검색해 보세요.</p>
+          <p class="demo-footnote">녹음·전사의 긴 수업 사용 경로는 검증 중입니다.</p>
+        </div>
+        <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" data-demo-panel="2" class="demo-panel review-panel" hidden>
+          <div class="review-heading"><div><span class="document-kicker">시험 범위</span><h3>역학 개념 복습</h3></div><span class="review-counter" aria-live="polite">1 / 3</span></div>
+          <p class="review-intro">범위 안의 문제를 하나씩 확인하고 원본으로 돌아갑니다.</p>
+          <div class="quiz-card"><span class="quiz-label">개념 확인</span><h4 data-quiz-question>뉴턴의 제2법칙을 설명해 보세요.</h4><p class="quiz-answer" data-quiz-answer hidden>물체에 작용하는 알짜힘은 질량과 가속도의 곱입니다. ΣF = ma.</p><div class="quiz-actions"><button type="button" class="button button-small" data-reveal>답 보기</button><button type="button" class="button button-outline button-small" data-next>다음 카드<Icon name="arrow" size={16} /></button></div><p class="quiz-source" data-quiz-source>출처: 역학 학습지 · 2쪽</p></div>
+          <p class="demo-footnote">웹 예제의 진행 상태는 저장하지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+    <p class="demo-caption">공개용 예제 · 실제 앱 화면을 바탕으로 재구성</p>
+  </div>
+</section>
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-demo-tab]'));
+  const panels = document.querySelectorAll<HTMLElement>('[data-demo-panel]');
+  function selectTab(index: number, focus = false) {
+    tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
+    panels.forEach((panel, i) => { panel.hidden = i !== index; });
+    document.querySelectorAll<HTMLElement>('[data-side-nav]').forEach(item => item.classList.toggle('selected', Number(item.dataset.sideNav) === index));
+    if (focus) tabs[index]?.focus();
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => selectTab(i));
+    tab.addEventListener('keydown', event => {
+      const index = event.key === 'ArrowRight' ? (i + 1) % tabs.length : event.key === 'ArrowLeft' ? (i + tabs.length - 1) % tabs.length : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : -1;
+      if (index >= 0) { event.preventDefault(); selectTab(index, true); }
+    });
+  });
+  const pageCounts = ['1 / 12', '1 / 4', '1 / 3'];
+  document.querySelectorAll<HTMLButtonElement>('[data-material]').forEach(button => button.addEventListener('click', () => {
+    const index = Number(button.dataset.material);
+    document.querySelectorAll<HTMLButtonElement>('[data-material]').forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
+    document.querySelectorAll<HTMLElement>('[data-document]').forEach(doc => { doc.hidden = Number(doc.dataset.document) !== index; });
+    const label = document.querySelector('[data-page-label]'); if (label) label.textContent = pageCounts[index] ?? '';
+  }));
+  const search = document.querySelector<HTMLInputElement>('.transcript-search input');
+  search?.addEventListener('input', () => {
+    const query = search.value.trim().toLocaleLowerCase('ko-KR'); let found = 0;
+    document.querySelectorAll<HTMLElement>('[data-transcript]').forEach(row => { const match = row.textContent?.toLocaleLowerCase('ko-KR').includes(query) ?? false; row.hidden = !match; if (match) found += 1; });
+    const empty = document.querySelector<HTMLElement>('.search-empty'); if (empty) empty.hidden = found > 0;
+  });
+  const quiz = [
+    { question: '뉴턴의 제2법칙을 설명해 보세요.', answer: '물체에 작용하는 알짜힘은 질량과 가속도의 곱입니다. ΣF = ma.', source: '출처: 역학 학습지 · 2쪽' },
+    { question: '알짜힘이 0인 물체는 반드시 정지해 있을까요?', answer: '아닙니다. 정지해 있거나 등속 직선 운동을 할 수 있습니다.', source: '출처: 역학 학습지 · 1쪽' },
+    { question: '작용과 반작용은 왜 서로 상쇄되지 않을까요?', answer: '서로 다른 물체에 작용하는 힘이기 때문입니다. 한 물체의 알짜힘에 두 힘을 함께 더하지 않습니다.', source: '출처: 수업 필기 · 1쪽' }
+  ];
+  let current = 0;
+  const reveal = document.querySelector<HTMLButtonElement>('[data-reveal]');
+  const answer = document.querySelector<HTMLElement>('[data-quiz-answer]');
+  reveal?.addEventListener('click', () => { if (!answer) return; answer.hidden = !answer.hidden; reveal.textContent = answer.hidden ? '답 보기' : '답 숨기기'; reveal.setAttribute('aria-expanded', String(!answer.hidden)); });
+  document.querySelector('[data-next]')?.addEventListener('click', () => {
+    current = (current + 1) % quiz.length; const card = quiz[current]; if (!card) return;
+    const question = document.querySelector('[data-quiz-question]'); const source = document.querySelector('[data-quiz-source]'); const counter = document.querySelector('.review-counter');
+    if (question) question.textContent = card.question; if (source) source.textContent = card.source; if (counter) counter.textContent = `${current + 1} / ${quiz.length}`;
+    if (answer) { answer.textContent = card.answer; answer.hidden = true; } if (reveal) { reveal.textContent = '답 보기'; reveal.setAttribute('aria-expanded', 'false'); }
+  });
+</script>

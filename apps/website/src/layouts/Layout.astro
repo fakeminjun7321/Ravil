@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import '../styles/expanded.css';
+import '../styles/art-direction.css';
+import '../styles/studio-public.css';
+import Icon from '../components/Icon.astro';
+interface Props { title?: string; description?: string }
+const { title = 'RAVIL — 내 기록에서 시작하는 개인 워크스페이스.', description = '자유롭게 남긴 기록을 AI와 함께 이해하고, 연결하고, 다시 활용하는 개인용 세컨드 브레인 RAVIL. Mac과 웹에서 생각과 작업을 이어가세요.' } = Astro.props;
+const home = Astro.url.pathname === '/';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f6f2" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="RAVIL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/social-preview.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="studio-public">
+    <a href="#main" class="skip-link">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="wordmark" href="/" aria-label="RAVIL 홈">RAVIL</a>
+        <nav class="desktop-nav" aria-label="주 메뉴">
+          <a href="/features/" aria-current={Astro.url.pathname === '/features/' ? 'page' : undefined}>기능</a>
+          <a href={home ? '#workflow' : '/#workflow'}>사용 흐름</a>
+          <a href="/updates/" aria-current={Astro.url.pathname === '/updates/' ? 'page' : undefined}>개발 소식</a>
+        </nav>
+        <a href="/login/" class="studio-login-link" data-auth-entry>로그인</a><a class="button button-small header-cta" href="/workspace/">내 작업 시작</a>
+        <button class="mobile-menu-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu" /></button>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" aria-label="모바일 메뉴" hidden>
+        <a href="/login/" data-auth-entry>로그인</a>
+        <a href="/features/">기능</a><a href="/#workflow">사용 흐름</a><a href="/#situations">활용 상황</a><a href="/updates/">개발 소식</a><a href="/guide/">사용 안내</a>
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand"><a href="/" class="wordmark">RAVIL</a><p>일상의 기록이, 다음 생각으로.</p><p>© 2026 RAVIL</p></div>
+        <nav class="footer-groups" aria-label="하단 메뉴"><div><span>RAVIL 알아보기</span><a href="/features/">기능 자세히 보기</a><a href="/#situations">활용 상황</a><a href="/workspace/">작업 공간</a></div><div><span>사용 안내</span><a href="/guide/">빠른 시작</a><a href="/privacy/">데이터 안내</a><a href="/#workflow">기록과 계획</a></div><div><span>개발 이야기</span><a href="/updates/">개발 소식</a><a href="/updates/#roadmap">개발 방향</a><a href="/workspace/">내 기록 열기</a></div></nav>
+      </div>
+    </footer>
+    <script>
+      import '../auth/header.ts';
+      const menuButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+      const menu = document.querySelector<HTMLElement>('#mobile-nav');
+      const closeMenu = () => { if (!menuButton || !menu) return; menu.hidden = true; menuButton.setAttribute('aria-expanded', 'false'); menuButton.setAttribute('aria-label', '메뉴 열기'); };
+      menuButton?.addEventListener('click', () => { if (!menu) return; const expanded = menuButton.getAttribute('aria-expanded') === 'true'; menu.hidden = expanded; menuButton.setAttribute('aria-expanded', String(!expanded)); menuButton.setAttribute('aria-label', expanded ? '메뉴 열기' : '메뉴 닫기'); });
+      menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', event => { if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') { closeMenu(); menuButton.focus(); } });
+    </script>
+  </body>
+</html>

@@ -4,6 +4,33 @@ import PDFKit
 @main
 enum RavilLauncher {
     static func main() {
+        if let flag = CommandLine.arguments.firstIndex(of: "--connection-check") {
+            guard CommandLine.arguments.indices.contains(flag+1) else { exit(2) }
+            Task { @MainActor in
+                do { try await ConnectionCheck.run(fixtures: URL(fileURLWithPath: CommandLine.arguments[flag+1])); exit(0) }
+                catch { fputs("Connection check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--workspace-check") {
+            guard CommandLine.arguments.indices.contains(flag + 1) else { exit(2) }
+            Task { @MainActor in
+                do {
+                    let image = CommandLine.arguments.indices.contains(flag + 2) ? URL(fileURLWithPath: CommandLine.arguments[flag + 2]) : nil
+                    try WorkspaceCheck.run(input: URL(fileURLWithPath: CommandLine.arguments[flag + 1]), image: image)
+                    exit(0)
+                } catch { fputs("Workspace check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--workspace-cloud-check") {
+            guard CommandLine.arguments.indices.contains(flag + 1) else { exit(2) }
+            Task { @MainActor in
+                do { try await WorkspaceCheck.cloud(fixture: URL(fileURLWithPath: CommandLine.arguments[flag + 1])); exit(0) }
+                catch { fputs("Workspace cloud check failed: \(error.localizedDescription)\n", stderr); exit(1) }
+            }
+            dispatchMain()
+        }
         if let flag = CommandLine.arguments.firstIndex(of: "--pdf-performance-regression-check") {
             guard CommandLine.arguments.indices.contains(flag + 1) else { exit(2) }
             Task { @MainActor in

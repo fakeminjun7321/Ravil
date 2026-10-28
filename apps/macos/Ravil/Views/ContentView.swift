@@ -46,6 +46,9 @@ struct ContentView: View {
                     SearchResultsView(model: model)
                 } else {
                     switch model.section {
+                    case .workspace: WorkspaceView(workspace: model.workspace, google: model.google, codex: model.codex, localModel: model.localAI)
+                    case .planner: WorkspaceView(workspace: model.workspace, google: model.google, codex: model.codex, localModel: model.localAI, initialTab: "plan")
+                    case .personal: WorkspaceView(workspace: model.workspace, google: model.google, codex: model.codex, localModel: model.localAI, initialTab: "profile")
                     case .overview: OverviewView(model: model)
                     case .lectures: LecturesView(model: model)
                     case .materials: MaterialsView(model: model)
@@ -53,6 +56,7 @@ struct ContentView: View {
                     case .exam: ExamView(model: model)
                     case .capture: CaptureView(model: model)
                     case .codex: CodexView(client: model.codex)
+                    case .localModel: LocalModelView(client: model.localAI)
                     case .settings: PreferencesView(model: model)
                     }
                 }
@@ -80,6 +84,7 @@ struct ContentView: View {
             }
         }
         .onChange(of: model.searchQuery) { _, _ in model.updateSearch() }
+        .onChange(of: model.workspace.entities) { _, _ in if isSearching { model.updateSearch() } }
         .alert("Ravil", isPresented: Binding(
             get: { model.alert != nil },
             set: { if !$0 { model.alert = nil } }
@@ -151,6 +156,9 @@ struct ContentView: View {
 
             List(selection: selection) {
                 Section {
+                    navigationItem(.workspace)
+                    navigationItem(.planner)
+                    navigationItem(.personal)
                     navigationItem(.overview)
                     navigationItem(.lectures)
                     navigationItem(.materials)
@@ -178,6 +186,7 @@ struct ContentView: View {
                 Section {
                     navigationItem(.capture)
                     navigationItem(.codex)
+                    navigationItem(.localModel)
                     navigationItem(.settings)
                 }
             }

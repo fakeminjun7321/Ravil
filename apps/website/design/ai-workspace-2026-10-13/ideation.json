@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-13",
+  "status": "awaiting visual selection; application and production unchanged",
+  "orderAuthority": "actual generated-image display order in this chat",
+  "options": [
+    {
+      "displayedOption": 1,
+      "direction": "Start desk",
+      "image": "/Users/minjun/Ravil/apps/website/design/ai-workspace-2026-10-13/01-start-desk.png",
+      "sourceImage": "/Users/minjun/.codex/generated_images/01a10626-6c07-7090-928d-eac27cbe114b/exec-625ce137-bb66-48e5-ad7b-87d098c8f016.png",
+      "width": 1487,
+      "height": 1058
+    },
+    {
+      "displayedOption": 2,
+      "direction": "Document studio",
+      "image": "/Users/minjun/Ravil/apps/website/design/ai-workspace-2026-10-13/02-document-studio.png",
+      "sourceImage": "/Users/minjun/.codex/generated_images/01a10626-6c07-7090-928d-eac27cbe114b/exec-5262fdd2-6cb5-412c-bba0-51c95bda4bab.png",
+      "width": 1487,
+      "height": 1058
+    },
+    {
+      "displayedOption": 3,
+      "direction": "Project desk",
+      "image": "/Users/minjun/Ravil/apps/website/design/ai-workspace-2026-10-13/03-project-desk.png",
+      "sourceImage": "/Users/minjun/.codex/generated_images/01a10626-6c07-7090-928d-eac27cbe114b/exec-c64e4466-793b-4747-84d6-92be54475704.png",
+      "width": 1487,
+      "height": 1058
+    }
+  ],
+  "references": [
+    "references/quilo-home-light.png",
+    "references/quilo-home-dark.png",
+    "references/quilo-tool-workspace.png"
+  ],
+  "verification": "Concept images only, not implemented or integration verified."
+}

@@ -21,10 +21,13 @@ struct UnsavedNoteDraft: Codable {
 @MainActor @Observable
 final class AppModel {
     enum Section: String, CaseIterable, Identifiable {
-        case overview = "홈", lectures = "강의", materials = "자료", notes = "위키", exam = "시험", capture = "녹음", codex = "Codex", settings = "설정"
+        case workspace = "내 작업", planner = "계획", personal = "나에 대해", overview = "보관함", lectures = "강의", materials = "자료", notes = "위키", exam = "시험", capture = "녹음", codex = "Codex", localModel = "로컬 모델", settings = "설정"
         var id: String { rawValue }
         var icon: String {
             switch self {
+            case .workspace: return "square.and.pencil"
+            case .planner: return "calendar"
+            case .personal: return "person.crop.circle"
             case .overview: return "square.grid.2x2"
             case .lectures: return "waveform"
             case .materials: return "doc.text"
@@ -32,13 +35,16 @@ final class AppModel {
             case .exam: return "checkmark.rectangle"
             case .capture: return "record.circle"
             case .codex: return "chevron.left.forwardslash.chevron.right"
+            case .localModel: return "desktopcomputer"
             case .settings: return "gearshape"
             }
         }
     }
 
-    var section: Section = .overview
+    var section: Section = .workspace
+    var workspace = PersonalWorkspace()
     var codex = CodexAppServerClient()
+    var localAI = LocalModelClient()
     var google = GoogleDriveAccount()
     var lectures: [LectureItem] = []
     var materials: [MaterialItem] = []
@@ -363,7 +369,11 @@ final class AppModel {
         guard let database else { return }
         let text = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { searchHits = []; return }
-        do { searchHits = try database.search(text) }
+        do {
+            searchHits = workspace.search(text).map { SearchHit(id: "workspace-" + $0.id, kind: .workspaceRecord,
+                title: $0.title, excerpt: String($0.payload.text("body").prefix(180)), targetID: $0.id, startMilliseconds: nil) }
+                + (try database.search(text))
+        }
         catch { alert = error.localizedDescription }
     }
 
@@ -371,6 +381,9 @@ final class AppModel {
         selectedSubjectGroupID = nil
         selectedCourseFilterID = nil
         switch hit.kind {
+        case .workspaceRecord:
+            workspace.selectedRecordID = hit.targetID
+            section = .workspace
         case .lecture, .transcript: selectLecture(hit.targetID, seekTo: hit.startMilliseconds)
         case .material:
             selectedMaterialID = hit.targetID

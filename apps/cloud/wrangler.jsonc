@@ -1,0 +1,14 @@
+{
+  "name": "ravil-workspace-preview", "main": "src/worker.ts", "compatibility_date": "2026-10-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "assets": {"directory": "../website/dist", "binding": "ASSETS", "run_worker_first": ["/api/*", "/workspace", "/workspace/*"]},
+  "vars": {
+    "APP_ORIGIN": "https://ravil-workspace-preview.fakeminjun7321-f03.workers.dev",
+    "APP_ORIGINS": "https://ravil-website.pages.dev,https://workspace-preview.ravil-website.pages.dev,https://ravil.app,https://www.ravil.app"
+  },
+  "d1_databases": [{"binding": "DB", "database_name": "ravil-workspace-preview", "database_id": "b9dbbf8c-c17a-490e-b37d-31d64272dcf5"}],
+  "r2_buckets": [{"binding": "FILES", "bucket_name": "ravil-workspace-preview"}],
+  "ai": {"binding": "AI"},
+  "triggers": {"crons": ["0 12 * * *"]}
+}

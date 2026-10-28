@@ -1,0 +1,19 @@
+.brain-panel { margin: 2rem 0 1rem; padding: 1.15rem 0 0; border-top: 1px solid var(--line, #d6d9d2); font-size: .875rem; }
+.brain-panel > header { display: flex; justify-content: space-between; align-items: flex-start; gap: .8rem; margin-bottom: 1rem; }
+.brain-panel h2 { margin: 0 0 .35rem; font-size: 1rem; }
+.brain-panel h3 { margin: 1rem 0 .4rem; font-size: .875rem; font-weight: 600; }
+.brain-panel p { margin: .3rem 0 .6rem; line-height: 1.65; white-space: pre-line; overflow-wrap: anywhere; }
+.brain-panel > header p { color: var(--muted, #687267); font-size: .8rem; }
+.brain-evidence { display: flex; gap: .4rem; flex-wrap: wrap; font-size: .75rem; }
+.brain-evidence button { color: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.brain-tags { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-top: .8rem; color: var(--muted, #586452); }
+.brain-tags button, .brain-suggestions article > button { font-size: .75rem; color: inherit; border: 1px solid var(--line, #cbd3c7); border-radius: .3rem; padding: .35rem .5rem; flex-shrink: 0; }
+.brain-suggestions article { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; margin-bottom: .9rem; }
+.brain-question { margin-top: 1.2rem; }
+.brain-question > label { display: block; font-size: .8rem; margin-bottom: .45rem; }
+.brain-question > div { display: flex; gap: .5rem; }
+.brain-question input { min-width: 0; flex: 1; border: 1px solid var(--line, #cbd3c7); border-radius: .35rem; padding: .65rem; background: transparent; font: inherit; }
+.brain-stale, .brain-previous { color: var(--muted, #6b6450); font-size: .8rem; }
+.brain-previous summary { cursor: pointer; }
+.task-date { max-width: 9rem; padding: .3rem; border: 1px solid var(--line, #cbd3c7); border-radius: .3rem; background: transparent; font: inherit; font-size: .75rem; }
+@media(max-width:600px) { .brain-question > div { flex-wrap: wrap; } .brain-question input { flex-basis: 100%; } .brain-suggestions article { flex-direction: column; gap: .35rem; } .brain-panel > header { flex-wrap: wrap; } .task-date { max-width: 8rem; } }

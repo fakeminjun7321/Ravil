@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { stories } from '../../data/stories';
+import type { Story } from '../../data/stories';
+export function getStaticPaths(){return stories.map(story=>({params:{slug:story.slug},props:{story}}));}
+interface Props { story: Story }
+const { story }=Astro.props;
+const more=stories.filter(item=>item.slug!==story.slug);
+---
+<Layout title={`${story.title} — RAVIL Journal`} description={story.summary}><div class="container"><article class="article-page journal-article"><a href="/updates/" class="journal-back">RAVIL Journal<Icon name="arrow" size={16}/></a><span class="eyebrow">{story.category} · 2026.10.01</span><h1>{story.title}</h1><p class="article-lead">{story.summary}</p>{story.sections.map(section=><section><h2>{section.heading}</h2>{section.paragraphs.map(paragraph=><p>{paragraph}</p>)}</section>)}<div class="article-callout"><p>RAVIL은 현재 개발·검증 중입니다. 이 글은 제품의 설계 방향과 개발 내용을 설명하며, 공개 출시나 모든 기능의 실사용 검증을 뜻하지 않습니다.</p></div><div class="article-related"><h2>함께 읽기</h2>{more.map(item=><a href={`/journal/${item.slug}/`}>{item.title}<Icon name="arrow" size={18}/></a>)}</div><a class="button" href="/features/">기능 자세히 보기</a></article></div></Layout>

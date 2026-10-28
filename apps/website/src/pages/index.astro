@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {icon} from '../workspace/icons';
+---
+<Layout>
+  <section class="studio-intro container" aria-labelledby="start-title">
+    <div class="studio-intro-copy">
+      <p class="studio-kicker">기록을 이해하는 개인 워크스페이스</p>
+      <h1 id="start-title">남긴 기록이,<br />다시 도움이 되도록.</h1>
+      <p class="studio-intro-description">생각과 경험, 자료와 계획을 남기세요.<br />AI와 함께 이해하고, 연결하고, 다시 꺼내 쓰세요.</p>
+      <div class="studio-intro-links"><a href="/workspace/" class="button">내 작업 시작<span set:html={icon('right')} /></a><a href="#workflow" class="studio-flow-link">사용 흐름 보기<span aria-hidden="true">↗</span></a></div>
+      <form id="start-capture" class="studio-start-form">
+        <label for="start-body">지금 떠오른 생각</label>
+        <textarea id="start-body" name="body" rows="3" maxlength="60000" placeholder="형식은 나중에. 떠오른 그대로 남겨보세요." required></textarea>
+        <div class="studio-start-tools"><label class="studio-capture-kind"><span set:html={icon('file')} /><span class="sr-only">기록 종류</span><select name="kind" aria-label="기록 종류"><option value="note">노트</option><option value="plan">계획</option><option value="activity">활동</option></select></label><button type="submit">기록하고 시작<span set:html={icon('right')} /></button></div>
+        <p>로그인 후 내 공간에 저장됩니다.</p>
+        <p id="start-error" role="alert" hidden></p>
+      </form>
+    </div>
+    <figure class="studio-product-figure" id="demo">
+      <div class="studio-product-preview" aria-label="원문과 AI 맥락 화면 예시">
+        <aside class="preview-sidebar"><b>RAVIL</b><div class="preview-search"><span set:html={icon('search')} />기록 찾기<kbd>⌘ K</kbd></div><div class="preview-nav"><span set:html={icon('home')} />내 작업</div><div class="preview-nav selected"><span set:html={icon('file')} />전체 기록</div><div class="preview-nav"><span set:html={icon('calendar')} />계획</div><div class="preview-separator"></div><small>최근 기록</small><p><span set:html={icon('file')} />집중이 잘 되는 환경</p><p><span set:html={icon('file')} />첫 화면 아이디어</p><p><span set:html={icon('file')} />이번 주 읽은 것</p><div class="preview-sidebar-foot"><span set:html={icon('settings')} />계정 · 동기화</div></aside>
+        <div class="preview-original"><div class="preview-topbar"><span>내 기록 / 이번 주 생각</span><span set:html={icon('more')} /></div><div class="preview-editor"><div class="preview-toolbar"><span set:html={icon('plus')} /><span>Aa⌄</span><span set:html={icon('bold')} /><span set:html={icon('list')} /><span set:html={icon('check')} /><span set:html={icon('link')} /><span set:html={icon('attach')} /></div><h2>이번 주 생각</h2><p>책에서 읽은 문장이 계속 생각난다.</p><p>집중은 의지보다 환경에서 시작되는 것 같다.</p><p>작업할 때 휴대폰을 책상 밖에 두어 보기.</p><h3>프로젝트 메모</h3><p class="preview-check"><span set:html={icon('check')} />10.23까지 Ravil 첫 화면 문구 다듬기</p><div class="preview-file"><span set:html={icon('file')} /><div>독서 메모.pdf<small>PDF · 예제 자료</small></div><span set:html={icon('more')} /></div><div class="preview-slash">/ 명령 · 기록 연결</div></div></div>
+        <aside class="preview-context"><small class="preview-provider"><span set:html={icon('sparkle')} />RAVIL AI</small><h2>기록에서 찾은 맥락</h2><div class="preview-tabs" role="tablist" aria-label="AI 결과 예시"><button id="preview-tab-summary" type="button" role="tab" aria-selected="true" aria-controls="preview-summary" data-preview="summary">정리</button><button id="preview-tab-connections" type="button" role="tab" aria-selected="false" aria-controls="preview-connections" data-preview="connections">연결</button><button id="preview-tab-actions" type="button" role="tab" aria-selected="false" aria-controls="preview-actions" data-preview="actions">다음 행동</button></div><div class="preview-result" id="preview-summary" role="tabpanel" aria-labelledby="preview-tab-summary"><h3>핵심 정리</h3><p class="preview-summary">집중 환경에 대한 생각과<br />Ravil 작업 계획이 담겨 있어요.</p><p>의지보다 환경이 중요하다는 독서 메모를 작은 실천으로 이어가려 합니다.</p><h3>근거 기록</h3><span class="preview-source"><span set:html={icon('file')} />이번 주 생각</span></div><div class="preview-result" id="preview-connections" role="tabpanel" aria-labelledby="preview-tab-connections" hidden><h3>이어지는 기록</h3><p>작업 환경을 바꿔보려는 이전 생각과 이어져요.</p><span class="preview-source"><span set:html={icon('file')} />집중이 잘 되는 환경</span><p>첫 화면의 문구를 더 다듬으려는 계획이 같아요.</p><span class="preview-source"><span set:html={icon('file')} />첫 화면 아이디어</span></div><div class="preview-result" id="preview-actions" role="tabpanel" aria-labelledby="preview-tab-actions" hidden><h3>다음 행동 제안</h3><p>다음 작업 시간에는 휴대폰을 책상 밖에 두어보세요.</p><span class="preview-source"><span set:html={icon('file')} />이번 주 생각</span><p>첫 화면 문구 후보를 세 개 적어 비교해보세요.</p><span class="preview-source"><span set:html={icon('file')} />첫 화면 아이디어</span></div><div class="preview-question"><span>내 기록에 질문</span><p>어떤 생각에서 이어졌을까?<span set:html={icon('up')} /></p></div></aside>
+      </div>
+      <figcaption>설명용 기록과 AI 결과 예시 · 실제 기록은 로그인 후 내 공간에서 사용합니다.</figcaption>
+    </figure>
+  </section>
+  <section class="studio-workflow container" id="workflow" aria-label="RAVIL 사용 흐름">
+    <article id="situations"><span class="studio-flow-icon" set:html={icon('file')} /><div><h2>남기기</h2><p>일상의 생각, 경험, 자료와 계획까지.<br />주제나 프로젝트를 먼저 정하지 않아도 돼요.</p></div></article>
+    <article><span class="studio-flow-icon" set:html={icon('link')} /><div><h2>이해하고 연결하기</h2><p>AI가 핵심을 정리하고 연결을 제안해요.<br />근거를 확인하고 필요한 내용만 반영하세요.</p></div></article>
+    <article><span class="studio-flow-icon" set:html={icon('sparkle')} /><div><h2>다시 활용하기</h2><p>쌓인 기록에 질문하고 생각을 이어가세요.<br />해보고 싶은 일은 계획으로 옮길 수 있어요.</p></div></article>
+  </section>
+  <section class="studio-mac container" aria-label="Mac 연결 개발 안내"><div><p class="studio-kicker">MAC · 개발 버전</p><h2>내 방식에 맞는 AI와.</h2><p>Mac에서 Codex 계정이나 로컬 모델 서버를<br />선택해 연결하는 기능을 개발하고 있습니다.</p><a href="/updates/">현재 개발 범위 보기<span aria-hidden="true">↗</span></a></div><div class="studio-mac-option"><span set:html={icon('code')} /><h3>Codex</h3><p>설치된 Codex와 로그인 계정을<br />사용하는 Mac 연결.</p></div><div class="studio-mac-option"><span set:html={icon('settings')} /><h3>Ollama</h3><p>내 Mac의 서버 주소와 모델을<br />선택하는 로컬 연결.</p></div><div class="studio-mac-option"><span set:html={icon('folder')} /><h3>LM Studio</h3><p>OpenAI 호환 로컬 서버로<br />모델을 직접 선택.</p></div></section>
+</Layout>
+<script>
+  const form=document.querySelector<HTMLFormElement>('#start-capture')!;
+  form.addEventListener('submit',event=>{
+    event.preventDefault();const data=new FormData(form),body=String(data.get('body')||'');if(!body.trim())return;
+    const error=document.querySelector<HTMLElement>('#start-error')!;error.hidden=true;
+    try{sessionStorage.setItem('ravil-pending-capture',JSON.stringify({body,kind:String(data.get('kind')),at:Date.now()}));}
+    catch{error.textContent='초안을 잠시 보관하지 못했어요. 적은 내용은 그대로 두었습니다. 내용을 복사해 둔 뒤 내 작업에서 다시 남겨 주세요.';error.hidden=false;return;}
+    location.assign('/workspace/');
+  });
+  const tabs=[...document.querySelectorAll<HTMLButtonElement>('[data-preview]')];
+  for(const tab of tabs){tab.addEventListener('click',()=>{for(const other of tabs){other.setAttribute('aria-selected',String(other===tab));document.querySelector<HTMLElement>('#preview-'+other.dataset.preview)!.hidden=other!==tab;}});tab.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const index=tabs.indexOf(tab);const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[next].click();tabs[next].focus();});}
+</script>

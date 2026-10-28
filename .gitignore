@@ -5,6 +5,8 @@ data/
 /.build/
 /dist/
 /tmp/
+/research/
+/model-archives.noindex/
 /.swiftpm/
 __pycache__/
 *.pyc
@@ -37,3 +39,4 @@ client_secret*.json
 credentials*.json
 .venv/
 venv/
+/output/

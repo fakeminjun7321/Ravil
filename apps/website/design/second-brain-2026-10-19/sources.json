@@ -1,0 +1,49 @@
+{
+  "reviewedOn": "2026-10-19",
+  "method": "Official public pages and hidden in-app browser; no accounts created; no private product workspaces accessed",
+  "productionReuse": "Research references only. Do not publish third-party screenshots as RAVIL product UI.",
+  "sources": [
+    {
+      "file": "references/capacities-workspace.png",
+      "url": "https://capacities.io/product",
+      "scope": "Official published workspace image, viewed on product page",
+      "sha256": "92e1a5fec12eac1e0421f3aff45c01efdad53406b5a4460f74dfcfedb93d5bd8"
+    },
+    {
+      "file": "references/mem-raw-vs-organized.png",
+      "url": "https://get.mem.ai/product/workspace",
+      "scope": "Official interactive raw/organized note comparison",
+      "sha256": "f64fcb3e78f7a5d3fd878c2598bf63a6ef9ebc96ec426eb999ff75bd593d1ccd"
+    },
+    {
+      "file": "references/reflect-product.png",
+      "url": "https://reflect.app/",
+      "scope": "Official public product preview; preview contains historical sample dates",
+      "sha256": "2bc74a26968dcbc0aa14f725d1d0df726721fa9cc83c47d45d99482052cc8cf0"
+    },
+    {
+      "file": "references/tana-project-structure.png",
+      "url": "https://outliner.tana.inc/",
+      "scope": "Public Projects demo selection",
+      "sha256": "8e0465aae5ffa8a5e54fe04776f4d4ed118aa5d3e93c18c909bd8019647b9ba8"
+    },
+    {
+      "file": "references/craft-home.png",
+      "url": "https://www.craft.do/ko",
+      "scope": "Korean homepage and published app preview",
+      "sha256": "0f846c6ff1e20ebe38ef5841a708867229649f0bd12d1948c7b73897e8f3caaf"
+    },
+    {
+      "file": "references/sunsama-plan.png",
+      "url": "https://www.sunsama.com/",
+      "scope": "Published planner illustration on official homepage",
+      "sha256": "7dfb210ebf3dea6b4fe048b75339191f480ede97a0033d92f1b9dca22fb0557d"
+    },
+    {
+      "file": "references/obsidian-workspace.png",
+      "url": "https://obsidian.md/",
+      "scope": "Public workspace demonstration on official homepage",
+      "sha256": "29cf2fc798edf629163bf44003676541a6f2975d7408c996ef63698ab17377bd"
+    }
+  ]
+}

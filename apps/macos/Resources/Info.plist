@@ -28,5 +28,7 @@
 	<string>Ravil.icns</string>
 	<key>RavilGoogleClientID</key>
 	<string>848810050161-t74ropjsk3m8vkv67aovprgna63o92ku.apps.googleusercontent.com</string>
+	<key>RavilWorkspaceURL</key>
+	<string>https://ravil-workspace-preview.fakeminjun7321-f03.workers.dev</string>
 </dict>
 </plist>

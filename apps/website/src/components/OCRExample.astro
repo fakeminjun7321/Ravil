@@ -1,0 +1,18 @@
+---
+const original='관성의 법칙\n알짜힘이 0이면 운동 상태가 유지된다.\nΣF = 0';
+---
+<div class="ocr-example" aria-label="OCR 원문 대조 예제"><div class="ocr-original"><span class="example-label">원문 예제</span><div class="original-paper"><span>일반물리학 · 역학</span><h3>관성의 법칙</h3><p>알짜힘이 0이면<br />운동 상태가 유지된다.</p><div class="formula">ΣF = 0</div></div></div><div class="ocr-edit"><label class="example-label" for="ocr-example-text">인식문 예제</label><textarea id="ocr-example-text" rows="6" spellcheck="false">{original}</textarea><div class="ocr-example-actions"><p>예제의 변경은 저장되지 않습니다.</p><button type="button" class="button button-outline button-small" data-ocr-reset>초기화</button><button type="button" class="button button-small" data-ocr-review>예제 검토</button></div><p class="ocr-review-result" role="status" hidden></p><p class="ocr-example-caption">원문과 인식문을 대조하는 방식의 예제입니다. 실제 OCR은 실행하지 않습니다.</p></div></div>
+<script>
+  const original='관성의 법칙\n알짜힘이 0이면 운동 상태가 유지된다.\nΣF = 0';
+  const field=document.querySelector<HTMLTextAreaElement>('#ocr-example-text');
+  const result=document.querySelector<HTMLElement>('.ocr-review-result');
+  const clear=()=>{if(result)result.hidden=true;};
+  document.querySelector('[data-ocr-reset]')?.addEventListener('click',()=>{if(field)field.value=original;clear();});
+  field?.addEventListener('input',clear);
+  document.querySelector('[data-ocr-review]')?.addEventListener('click',()=>{
+    if(!field||!result)return;
+    const same=field.value.replace(/\s+/g,'')===original.replace(/\s+/g,'');
+    result.hidden=false;
+    result.textContent=same?'예제 대조 완료: 원문 예제와 같은 문장입니다.':'원문 예제와 다른 부분이 있습니다. 두 문장을 직접 대조해 보세요.';
+  });
+</script>

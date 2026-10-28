@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-19",
+  "status": "selected",
+  "options": [
+    {
+      "number": 1,
+      "file": "01-record-desk.png"
+    },
+    {
+      "number": 2,
+      "file": "02-daily-log.png"
+    },
+    {
+      "number": 3,
+      "file": "03-knowledge-library.png"
+    }
+  ],
+  "type": "design concepts; not implemented screens",
+  "typographyConstraint": "UI 12–13 CSS px; body 15–16 desktop / 16 mobile",
+  "selected": 1,
+  "selectedBy": "User response on 2026-10-19",
+  "implementation": {
+    "directory": "implemented/",
+    "scope": "introduction, login, workspace; local verified build; no production deployment"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "project": "Ravil",
+  "decisionDate": "2026-10-22",
+  "policy": "records instead of obsolete full weights or archives; retain selected final small adapters",
+  "networkExecutedDuringCleanup": false,
+  "downloadAvailabilityVerified": false,
+  "recipes": [
+    {
+      "id": "parakeet-v3-bf16",
+      "kind": "public-original",
+      "repository": "mlx-community/parakeet-tdt-0.6b-v3",
+      "revision": "ed2b7e8c15f9aaa0b5772e2efb986255eaef7e15",
+      "filename": "model.safetensors",
+      "sha256": "05e01c7f396c298cf7d23f61da7b504adeab698f0aaeafd9c82d198625464592",
+      "commandFromRepositoryRoot": "tmp/model-opt/venv/bin/python script/fetch_asr_candidate.py parakeet-v3-bf16 --models research/models",
+      "requiresNetwork": true
+    },
+    {
+      "id": "parakeet-redux",
+      "kind": "public-original",
+      "repository": "moondream/parakeet-redux",
+      "revision": "2bf128600aac4b16946f7ed8372e56117fe5e23b",
+      "filename": "model.safetensors",
+      "sha256": "78ec25733ee0d0c1586d1346fc86db9d0c2e436e3a8ab1d32a82d1bb8f848d21",
+      "commandFromRepositoryRoot": "tmp/model-opt/venv/bin/python script/fetch_asr_candidate.py parakeet-redux --models research/models",
+      "requiresNetwork": true
+    },
+    {
+      "id": "qwen-1.7b-4bit",
+      "kind": "public-original",
+      "repository": "mlx-community/Qwen3-ASR-1.7B-4bit",
+      "revision": "78a389c776a5483b2d0d4ea5494e11012e0d6159",
+      "filename": "model.safetensors",
+      "sha256": "9848eaf7a5c1589c671b35035ac27b72e248dd0c604eacae547e7e403d29db45",
+      "method": "Use huggingface_hub.snapshot_download at the exact revision into a new directory; compare model.safetensors SHA-256; retain tokenizer/config/license files. This has not been re-downloaded in this cleanup.",
+      "requiresNetwork": true
+    },
+    {
+      "id": "training-base-Qwen-Qwen3-ASR-0.6B-hf",
+      "kind": "public-training-base",
+      "repository": "Qwen/Qwen3-ASR-0.6B-hf",
+      "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+      "filename": "model.safetensors",
+      "sha256": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
+      "cacheHome": "tmp/model-dev/hf-cache",
+      "method": "Set HF_HOME to cacheHome before importing huggingface_hub. Run snapshot_download(repository, revision=revision), retain all required configs/tokenizer files, then verify the weight digest. No full offline archive remains.",
+      "requiresNetwork": true
+    },
+    {
+      "id": "training-base-Qwen-Qwen3-ASR-1.7B-hf",
+      "kind": "public-training-base",
+      "repository": "Qwen/Qwen3-ASR-1.7B-hf",
+      "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+      "filename": "model.safetensors",
+      "sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+      "cacheHome": "tmp/model-dev/hf-cache",
+      "method": "Set HF_HOME to cacheHome before importing huggingface_hub. Run snapshot_download(repository, revision=revision), retain all required configs/tokenizer files, then verify the weight digest. No full offline archive remains.",
+      "requiresNetwork": true
+    },
+    {
+      "id": "training-base-openai-whisper-tiny",
+      "kind": "public-training-base",
+      "repository": "openai/whisper-tiny",
+      "revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af",
+      "filename": "model.safetensors",
+      "sha256": "7ebd0e69e78190ffe1438491fa05cc1f5c1aa3a4c4db3bc1723adbb551ea2395",
+      "cacheHome": "tmp/model-dev/hf-cache",
+      "method": "Set HF_HOME to cacheHome before importing huggingface_hub. Run snapshot_download(repository, revision=revision), retain all required configs/tokenizer files, then verify the weight digest. No full offline archive remains.",
+      "requiresNetwork": true
+    },
+    {
+      "id": "whisper-v1-ggml-export",
+      "kind": "regenerate-from-final-adapter",
+      "commandFromRepositoryRoot": "HF_HOME=\"$PWD/tmp/model-dev/hf-cache\" tmp/model-dev/venv/bin/python script/export_whisper_ko_adapter.py --adapter research/experiments/whisper-tiny/ravil-stt-tiny-ko-lora-v1 --whisper-cpp tmp/model-dev/whisper.cpp --openai-whisper tmp/model-dev/openai-whisper --output /absolute/new/whisper-ggml-export",
+      "priorExportManifest": "research/experiments/whisper-tiny/ravil-stt-tiny-ko-lora-v1/ggml-export/export.json",
+      "requiresNetworkUnlessBaseReacquired": true,
+      "exactOutputDigestReproductionVerified": false
+    },
+    {
+      "id": "qwen-pilot-training",
+      "kind": "retrain-from-frozen-manifests",
+      "commandFromRepositoryRoot": "tmp/model-dev/venv/bin/python script/train_qwen_asr_adapter.py --data tmp/model-train-20261001/data --pseudo tmp/model-train-20261001/pseudo-v2 --hf-home tmp/model-dev/hf-cache --output /absolute/new/qwen-lora-run --epochs 2 --allow-pseudo-labels",
+      "requiresBaseReacquisitionFirst": true,
+      "hyperparametersAndPriorResults": "research/experiments/qwen-asr-0.6b-lora-pilot/experiment.json",
+      "retainedFinalAdapter": "research/experiments/qwen-asr-0.6b-lora-pilot/adapter/adapter_model.safetensors",
+      "exactOutputDigestReproductionVerified": false
+    },
+    {
+      "id": "whisper-tiny-v0",
+      "kind": "historical-training",
+      "record": "research/experiments/whisper-tiny/ravil-stt-tiny-ko-lora-v0/experiment.json",
+      "exactOriginalCommandKnown": false,
+      "weightWillBeRemoved": true
+    },
+    {
+      "id": "whisper-tiny-ggml-baseline",
+      "kind": "historical-baseline",
+      "method": "Old file hash and evaluation are preserved in deletion plan; exact pinned source of the old GGML baseline is not established by the available record. Rebuild a new baseline from pinned HF base and converter and report it as a new artifact.",
+      "exactOriginalBinaryReproductionVerified": false
+    }
+  ]
+}

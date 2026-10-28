@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-19",
+  "selectedConcept": 1,
+  "environment": "localhost:8896, isolated D1/R2, synthetic records",
+  "aiScreenshots": "fixture responses, not live cloud model verification",
+  "productionRequests": 0,
+  "files": [
+    {
+      "file": "browser-verification.json",
+      "sha256": "2365d7a53bdbbbd95c895228695a7c197bf91f67237d8f2037f66db5337e8bf8"
+    },
+    {
+      "file": "entry-verification.json",
+      "sha256": "af9b112b96cdf1b58b8a6c26f90b1e784e101ff3720ed05b2e260e78da95d467"
+    },
+    {
+      "file": "introduction-desktop.png",
+      "sha256": "28628d54465adb8b499dc206473aeadd36f83b2174c0d3b17c505106da5b1563"
+    },
+    {
+      "file": "introduction-mobile.png",
+      "sha256": "aedb352fa34ba24cf3fba4a9ae840a15f084d0fd87aefb0f5ab991d80497b2e7"
+    },
+    {
+      "file": "login-desktop.png",
+      "sha256": "a63b6e1d2d07394071490e83600529cfc1b2945a7b7b28206e7f6cd58103376c"
+    },
+    {
+      "file": "login-mobile.png",
+      "sha256": "00ef56ab5605705fa129f0cec037debb87c81fd3314d48bf33a927442c9c4488"
+    },
+    {
+      "file": "mobile-commands-verification.json",
+      "sha256": "fa7a71aaa1c5e9e49390e98fc1f398a1bb6807c73ed751b549f6b749c27f153e"
+    },
+    {
+      "file": "public-pages-verification.json",
+      "sha256": "c335dd7f911425c232f76b8bfbb58299299a8432379dbdb3479e00635a8d5635"
+    },
+    {
+      "file": "workspace-desktop.png",
+      "sha256": "d8594f4b99f7a250724033103244ef1a709fe080de9e2f77b9dde935432326e4"
+    },
+    {
+      "file": "workspace-mobile-ai-fixture.png",
+      "sha256": "401e377c80b42802d6d692b4d1d889f221502d5c8b5ec7d12c23b6ae401259fc"
+    },
+    {
+      "file": "workspace-mobile.png",
+      "sha256": "69ab8e81492ae794b3f0ba3c2fb8484873afa528c22971b857ef421c86c119bc"
+    }
+  ]
+}

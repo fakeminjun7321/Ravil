@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "environment": "http://127.0.0.1:8896",
+  "browser": "headless Playwright Chromium; Browser plugin not available",
+  "viewports": [
+    "1440x1024",
+    "393x852"
+  ],
+  "requests": 59,
+  "productionRequests": 0,
+  "modelRequests": 3,
+  "aiVerification": "AI response fixture only; no live provider called. Actual unconfigured AI route separately returned 503.",
+  "checks": [
+    "UI-login",
+    "general-project-without-topic-or-deadline",
+    "record-and-manual-tags",
+    "AI-contract-result-saved-in-real-D1",
+    "source-links-and-connections",
+    "explicit-AI-tags",
+    "suggestion-to-task-date-and-completion",
+    "duplicate-suggestion-preserves-progress",
+    "question-answer-with-sources",
+    "edits-during-inference-preserved",
+    "stale-analysis-reopen",
+    "mobile-no-horizontal-overflow",
+    "real-backup-download-verify-archive-and-rediscovery"
+  ],
+  "errors": [
+    {
+      "path": "/api/ai/analyze",
+      "status": 503
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    }
+  ]
+}

@@ -156,7 +156,7 @@ struct KnowledgeNote: Identifiable, Hashable {
 }
 
 struct SearchHit: Identifiable, Hashable {
-    enum Kind: String { case lecture, transcript, material, note }
+    enum Kind: String { case lecture, transcript, material, note, workspaceRecord }
     let id: String
     let kind: Kind
     let title: String

@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "documents": 15,
+  "productionRequests": 0,
+  "checks": [
+    {
+      "page": "home",
+      "viewport": "1440x1024",
+      "title": "RAVIL — 내 기록에서 시작하는 개인 워크스페이스.",
+      "h1": "남긴 기록이,다시 도움이 되도록.",
+      "overflow": false,
+      "body": 1173,
+      "h1Size": "41px"
+    },
+    {
+      "page": "login",
+      "viewport": "1440x1024",
+      "title": "로그인 · RAVIL",
+      "h1": "다시 만나서 반가워요.",
+      "overflow": false,
+      "body": 521,
+      "h1Size": "23px"
+    },
+    {
+      "page": "signup",
+      "viewport": "1440x1024",
+      "title": "계정 만들기 · RAVIL",
+      "h1": "내 공간 만들기",
+      "overflow": false,
+      "body": 548,
+      "h1Size": "23px"
+    },
+    {
+      "page": "features",
+      "viewport": "1440x1024",
+      "title": "기능 — RAVIL",
+      "h1": "내가 남긴 기록이,다음 생각과 행동으로.",
+      "overflow": false,
+      "body": 2032,
+      "h1Size": "39px"
+    },
+    {
+      "page": "guide",
+      "viewport": "1440x1024",
+      "title": "사용 안내 — RAVIL",
+      "h1": "기록 하나부터 시작해요.",
+      "overflow": false,
+      "body": 1644,
+      "h1Size": "39px"
+    },
+    {
+      "page": "privacy",
+      "viewport": "1440x1024",
+      "title": "데이터 안내 — RAVIL",
+      "h1": "내 기록과 AI의 범위.",
+      "overflow": false,
+      "body": 2015,
+      "h1Size": "39px"
+    },
+    {
+      "page": "updates",
+      "viewport": "1440x1024",
+      "title": "개발 소식 — RAVIL",
+      "h1": "기록에서 시작하는,나를 위한 작업 공간.",
+      "overflow": false,
+      "body": 1370,
+      "h1Size": "39px"
+    },
+    {
+      "page": "home",
+      "viewport": "393x852",
+      "title": "RAVIL — 내 기록에서 시작하는 개인 워크스페이스.",
+      "h1": "남긴 기록이,다시 도움이 되도록.",
+      "overflow": false,
+      "body": 1073,
+      "h1Size": "34px"
+    },
+    {
+      "page": "login",
+      "viewport": "393x852",
+      "title": "로그인 · RAVIL",
+      "h1": "다시 만나서 반가워요.",
+      "overflow": false,
+      "body": 353,
+      "h1Size": "23px"
+    },
+    {
+      "page": "signup",
+      "viewport": "393x852",
+      "title": "계정 만들기 · RAVIL",
+      "h1": "내 공간 만들기",
+      "overflow": false,
+      "body": 380,
+      "h1Size": "23px"
+    },
+    {
+      "page": "features",
+      "viewport": "393x852",
+      "title": "기능 — RAVIL",
+      "h1": "내가 남긴 기록이,다음 생각과 행동으로.",
+      "overflow": false,
+      "body": 2017,
+      "h1Size": "30px"
+    },
+    {
+      "page": "guide",
+      "viewport": "393x852",
+      "title": "사용 안내 — RAVIL",
+      "h1": "기록 하나부터 시작해요.",
+      "overflow": false,
+      "body": 1629,
+      "h1Size": "30px"
+    },
+    {
+      "page": "privacy",
+      "viewport": "393x852",
+      "title": "데이터 안내 — RAVIL",
+      "h1": "내 기록과 AI의 범위.",
+      "overflow": false,
+      "body": 2000,
+      "h1Size": "30px"
+    },
+    {
+      "page": "updates",
+      "viewport": "393x852",
+      "title": "개발 소식 — RAVIL",
+      "h1": "기록에서 시작하는,나를 위한 작업 공간.",
+      "overflow": false,
+      "body": 1355,
+      "h1Size": "30px"
+    }
+  ],
+  "pageErrors": []
+}

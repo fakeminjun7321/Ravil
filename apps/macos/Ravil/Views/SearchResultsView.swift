@@ -30,6 +30,7 @@ struct SearchResultsView: View {
 
     private func symbol(for kind: SearchHit.Kind) -> String {
         switch kind {
+        case .workspaceRecord: return "square.and.pencil"
         case .lecture: return "waveform"
         case .transcript: return "text.quote"
         case .material: return "doc.text"

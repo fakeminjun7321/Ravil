@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "productionRequests": 0,
+  "authenticatedFlowRequests": 16,
+  "checks": [
+    "homepage-capture",
+    "login-return",
+    "explicit-draft-save",
+    "unclassified-record",
+    "D1-whitespace-roundtrip",
+    "reopen",
+    "synthetic-storage-failure-keeps-input-and-page"
+  ],
+  "aiCalls": 0,
+  "pageErrors": []
+}

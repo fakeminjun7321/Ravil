@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "requests": 13,
+  "productionRequests": 0,
+  "modelRequests": 1,
+  "aiVerification": "Provider fixture only",
+  "checks": [
+    "mobile-empty-question-opens-panel",
+    "question-input-focus",
+    "no-model-call-for-empty-question",
+    "mobile-summary-opens-result-panel",
+    "AI-tabs-arrow-and-home-navigation",
+    "no-horizontal-overflow"
+  ],
+  "pageErrors": []
+}

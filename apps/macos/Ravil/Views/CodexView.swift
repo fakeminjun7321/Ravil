@@ -2,7 +2,14 @@ import SwiftUI
 
 struct CodexView: View {
     @Bindable var client: CodexAppServerClient
-    @State private var draft = ""
+    @State private var draft: String
+    var onSaveResponse: ((String) -> Void)?
+
+    init(client: CodexAppServerClient, initialPrompt: String = "", onSaveResponse: ((String) -> Void)? = nil) {
+        self.client = client
+        self.onSaveResponse = onSaveResponse
+        _draft = State(initialValue: initialPrompt)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,7 +33,12 @@ struct CodexView: View {
                     .frame(maxWidth: 200)
                     .disabled(client.sending)
                 }
-                if client.connected {
+                if client.connecting { ProgressView().controlSize(.small) }
+                if client.connected && !client.accountConnected {
+                    Button("로그인") { client.beginLogin() }
+                    Button("계정 확인") { client.refreshAccount() }
+                }
+                if client.connected || client.connecting {
                     Button("연결 끊기") { client.disconnect() }
                 } else {
                     Button("연결") { client.connect() }
@@ -35,6 +47,13 @@ struct CodexView: View {
             .padding(18)
 
             Divider()
+            if let url = client.loginURL {
+                HStack {
+                    Link("Codex 로그인 열기", destination: url)
+                    if let code = client.loginCode { Text(code).monospaced().textSelection(.enabled) }
+                }.padding(12)
+                Divider()
+            }
 
             if client.messages.isEmpty {
                 ContentUnavailableView {
@@ -80,12 +99,17 @@ struct CodexView: View {
                         .textFieldStyle(.roundedBorder)
                         .disabled(!client.accountConnected || client.selectedModel == nil || client.sending)
                         .onSubmit(send)
+                    if client.sending { Button("중단") { client.cancel() } }
                     Button("보내기", action: send)
                         .buttonStyle(.borderedProminent)
-                        .disabled(!client.accountConnected || client.selectedModel == nil || client.sending ||
+                        .disabled(!client.ready ||
                                   draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
-                Text("읽기 전용 · 종료하면 대화가 패널에서 사라집니다")
+                if let onSaveResponse {
+                    Button("응답을 새 노트로 저장") { if let value = client.lastResponse { onSaveResponse(value) } }
+                        .disabled(client.lastResponse == nil || client.sending)
+                }
+                Text("선택한 질문과 기록만 전송 · 원문은 유지됩니다")
                     .font(.caption2).foregroundStyle(.secondary)
             }
             .padding(16)
@@ -95,7 +119,6 @@ struct CodexView: View {
     private func send() {
         let value = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { return }
-        client.send(value)
-        draft = ""
+        if client.send(value) { draft = "" }
     }
 }

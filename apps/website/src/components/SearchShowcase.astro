@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro';
+const results = [
+  { id:'pdf-inertia',kind:'PDF',icon:'file',title:'역학 학습지',location:'1쪽',text:'관성은 물체가 운동 상태를 유지하려는 성질입니다.',body:'알짜힘이 0이면 물체는 정지해 있거나 등속 직선 운동을 유지합니다. ΣF = 0.' },
+  { id:'lecture-inertia',kind:'강의',icon:'mic',title:'뉴턴의 운동 법칙',location:'02:14',text:'뉴턴의 제1법칙은 관성의 법칙이라고도 불립니다.',body:'먼저 제1법칙은 관성의 법칙입니다. 물체의 운동 상태가 변하려면 알짜힘이 필요합니다.' },
+  { id:'note-inertia',kind:'노트',icon:'note',title:'헷갈렸던 개념',location:'내 노트',text:'관성과 질량의 관계를 다시 확인하기.',body:'관성은 운동 상태를 유지하려는 성질이고, 질량은 관성의 크기를 나타내는 척도입니다.' },
+  { id:'pdf-acceleration',kind:'PDF',icon:'file',title:'역학 학습지',location:'2쪽',text:'알짜힘은 질량과 가속도의 곱입니다.',body:'뉴턴의 제2법칙: ΣF = ma. 질량이 2 kg이고 알짜힘이 6 N이면 가속도 크기는 3 m/s²입니다.' },
+  { id:'lecture-acceleration',kind:'강의',icon:'mic',title:'힘과 운동',location:'12:11',text:'같은 힘이라면 질량이 클수록 가속도는 작아집니다.',body:'가속도의 크기는 a = F / m입니다. 같은 알짜힘을 가했을 때 질량이 두 배이면 가속도 크기는 절반입니다.' },
+  { id:'pdf-reaction',kind:'PDF',icon:'file',title:'수업 필기',location:'1쪽',text:'작용과 반작용은 서로 다른 물체에 작용합니다.',body:'두 물체가 서로에게 가하는 힘은 크기가 같고 방향이 반대입니다. 한 물체의 알짜힘에서 작용과 반작용을 함께 더하지 않습니다.' },
+  { id:'note-reaction',kind:'노트',icon:'note',title:'자유 물체도',location:'내 노트',text:'반작용을 찾기 전에 어떤 물체의 힘인지 정하기.',body:'책상이 책을 위로 미는 힘의 반작용은 책이 책상을 아래로 미는 힘입니다. 책의 무게와는 다른 힘의 쌍입니다.' }
+];
+---
+<section class="search-showcase" id="search-example"><div class="container search-showcase-inner"><div class="search-showcase-copy"><span class="eyebrow">FIND IT AGAIN</span><h2>어디에 있었는지,<br />다시 찾는 수고를 줄이게.</h2><p>자료, 강의 기록, 노트에서<br class="desktop-break" /> 필요한 내용을 함께 찾아봅니다.</p><span class="search-demo-disclaimer">검색 예제 · 개인 자료를 불러오지 않습니다.</span><a class="text-link" href="/features/#notes">검색 기능 자세히 보기<Icon name="arrow" size={17} /></a></div><div class="unified-search-window"><label class="unified-search-input"><Icon name="search" size={21} /><input type="search" aria-label="자료·강의·노트 검색 예제" value="관성" placeholder="공부한 내용을 찾아보세요" /></label><div class="suggested-search" aria-label="예제 검색어">{['관성','가속도','반작용'].map(term=><button type="button" data-search-term={term} aria-pressed={term==='관성'?'true':'false'}>{term}</button>)}</div><p class="unified-search-count" role="status">검색 결과 3개</p><div class="unified-results">{results.map(result=><button type="button" class="unified-result" data-search-result={result.id} data-search-text={`${result.title} ${result.text}`} data-result-body={result.body} data-result-title={`${result.title} · ${result.location}`} aria-expanded="false" hidden={!result.text.includes('관성')}><span class="unified-kind"><Icon name={result.icon} size={23} /><span>{result.kind}</span></span><span class="unified-result-body"><strong>{result.title}</strong><span>{result.text}</span></span><span class="unified-location">{result.location}</span><Icon name="arrow" size={18} /></button>)}</div><p class="unified-empty" hidden>일치하는 예제가 없습니다. 다른 단어를 입력해 보세요.</p><aside class="selected-search-result" aria-live="polite" hidden><span>원문 예제</span><h3 data-selected-title></h3><p data-selected-body></p><button type="button" class="inline-link" data-close-result>닫기</button></aside></div></div></section>
+<script>
+  const input = document.querySelector<HTMLInputElement>('.unified-search-input input');
+  const results = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-search-result]'));
+  const selected = document.querySelector<HTMLElement>('.selected-search-result');
+  const closeSelected = () => { if (selected) selected.hidden = true; results.forEach(result=>result.setAttribute('aria-expanded','false')); };
+  const filter = () => {
+    const query = input?.value.trim().toLocaleLowerCase('ko-KR') ?? ''; let count=0;
+    results.forEach(result=>{const match=result.dataset.searchText?.toLocaleLowerCase('ko-KR').includes(query)??false;result.hidden=!match;if(match)count++;});
+    const label=document.querySelector('.unified-search-count');if(label)label.textContent=`검색 결과 ${count}개`;
+    const empty=document.querySelector<HTMLElement>('.unified-empty');if(empty)empty.hidden=count>0;
+    document.querySelectorAll<HTMLButtonElement>('[data-search-term]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.searchTerm===query)));
+    closeSelected();
+  };
+  input?.addEventListener('input',filter);
+  document.querySelectorAll<HTMLButtonElement>('[data-search-term]').forEach(button=>button.addEventListener('click',()=>{if(input)input.value=button.dataset.searchTerm??'';filter();}));
+  results.forEach(result=>result.addEventListener('click',()=>{
+    if(!selected)return;closeSelected();selected.hidden=false;result.setAttribute('aria-expanded','true');
+    const title=selected.querySelector('[data-selected-title]');const body=selected.querySelector('[data-selected-body]');
+    if(title)title.textContent=result.dataset.resultTitle??'';if(body)body.textContent=result.dataset.resultBody??'';
+  }));
+  document.querySelector('[data-close-result]')?.addEventListener('click',closeSelected);
+</script>

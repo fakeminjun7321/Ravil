@@ -81,11 +81,13 @@ private struct GoogleTokenResponse: Decodable {
     let accessToken: String
     let refreshToken: String?
     let expiresIn: Int?
+    let scope: String?
 
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case refreshToken = "refresh_token"
         case expiresIn = "expires_in"
+        case scope
     }
 }
 
@@ -254,8 +256,8 @@ final class GoogleDriveAccount {
             UserDefaults.standard.string(forKey: "RavilGoodnotesRootFolderID") ?? "") ?? ""
     }
 
-    init() {
-        guard !AppPaths.isVerificationProfile else { status = "검증용 보관함 · 계정 연결 안 함"; return }
+    init(verificationOnly: Bool = false) {
+        guard !verificationOnly, !AppPaths.isVerificationProfile else { status = "검증용 보관함 · 계정 연결 안 함"; return }
         isConnected = (try? GoogleRefreshTokenStore.read(clientID: clientID)) != nil
         if isConnected { status = "Google 연결 저장됨" }
     }
@@ -277,7 +279,7 @@ final class GoogleDriveAccount {
         else if wasPolling && automaticEnabled { startPolling() }
     }
 
-    func connect() async {
+    func connect(includeCalendar: Bool = false) async {
         guard !isConnecting else { return }
         isConnecting = true
         defer { isConnecting = false }
@@ -286,7 +288,7 @@ final class GoogleDriveAccount {
             status = GoogleAccountError.invalidClient.localizedDescription
             return
         }
-        guard GoogleDriveConfiguration.folderID(from: rootFolderID) != nil else {
+        guard includeCalendar || GoogleDriveConfiguration.folderID(from: rootFolderID) != nil else {
             status = GoogleAccountError.invalidFolder.localizedDescription
             return
         }
@@ -303,7 +305,8 @@ final class GoogleDriveAccount {
                 URLQueryItem(name: "client_id", value: clientID),
                 URLQueryItem(name: "redirect_uri", value: redirect),
                 URLQueryItem(name: "response_type", value: "code"),
-                URLQueryItem(name: "scope", value: "https://www.googleapis.com/auth/drive.readonly"),
+                URLQueryItem(name: "scope", value: includeCalendar ? "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/calendar.events" : "https://www.googleapis.com/auth/drive.readonly"),
+                URLQueryItem(name: "include_granted_scopes", value: "true"),
                 URLQueryItem(name: "access_type", value: "offline"),
                 URLQueryItem(name: "prompt", value: "select_account consent"),
                 URLQueryItem(name: "state", value: state),
@@ -321,6 +324,7 @@ final class GoogleDriveAccount {
             ])
             guard let refresh = token.refreshToken else { throw GoogleAccountError.callbackInvalid }
             try GoogleRefreshTokenStore.save(refresh, clientID: clientID)
+            UserDefaults.standard.set(token.scope ?? "", forKey: "RavilGoogleGrantedScopes-" + clientID)
             accessToken = token.accessToken
             accessTokenExpiresAt = Date().addingTimeInterval(TimeInterval(token.expiresIn ?? 3600) - 60)
             connectionEpoch += 1
@@ -331,6 +335,16 @@ final class GoogleDriveAccount {
         } catch {
             status = error.localizedDescription
         }
+    }
+
+    func calendarCredentials() throws -> [String: String] {
+        guard isConnected,
+              (UserDefaults.standard.string(forKey: "RavilGoogleGrantedScopes-" + clientID) ?? "").split(separator: " ").contains("https://www.googleapis.com/auth/calendar.events"),
+              let refresh = try GoogleRefreshTokenStore.read(clientID: clientID) else {
+            throw GoogleAccountError.denied
+        }
+        return ["refreshToken": refresh, "clientID": clientID,
+                "clientSecret": GoogleDriveConfiguration.bundledClientSecret ?? ""]
     }
 
     func disconnect() {

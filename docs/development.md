@@ -1,5 +1,38 @@
 # Ravil 개발 환경
 
+제품 목표는 [개인용 세컨드 브레인](product-goal.md), 구현 순서는 [공식 로드맵](canonical-roadmap.md)을 따른다. 과목·시험 예시는 기존 학습 기능의 검사 자료로 유지한다.
+
+## 개인 작업 공간 검사
+
+```sh
+npm test
+npm --prefix apps/cloud test
+npm --prefix apps/cloud run check
+cd apps/website
+./node_modules/.bin/tsx --test test/*.test.ts
+npm run check
+npm run build
+```
+
+AI 계약은 `apps/website/src/workspace/second-brain.ts`에서 공유한다. `POST /api/ai/analyze`는 `recordID`, 선택 `question`(최대 2,000자), `mode`(`organize` 또는 `question`)를 받는다. 결과에는 요약·주제·제안, 관련 기록, 질문 답변과 근거 ID, 제공한 출처 목록·원문 입력 해시가 포함된다. 주제·프로젝트로 연결되거나 질문과 일치한 관련 기록만 제한된 문맥으로 전달한다.
+
+웹은 `store.saveAnalysis(record, result)`로 `payload.aiAnalysis`에 결과를 저장하고 수동 태그를 유지한다. 원문·연결이 바뀌면 기존 결과는 `stale: true`로 보관한다. 서버도 동기화 시 같은 무효화 기준을 적용한다. `getRecordAnalysis(payload)`는 현재 유효한 결과만 반환한다. 검색은 원문·수동 태그·주제·프로젝트·현재 AI 요약과 태그를 사용한다.
+
+웹과 AI 서버는 이 응답 계약을 함께 사용하는 버전으로 배포해야 한다. 이전 서버의 입력 해시 없는 응답은 원문 변경과 혼동하지 않고 업데이트가 필요한 연결로 안내한다. 배포 전 두 구성요소의 실제 연결과 구버전 클라이언트 사용 범위를 확인한다.
+
+실제 로컬 D1·R2·인증을 사용하는 검사는 격리된 Wrangler `--local` 설정에서 실행한다. 모델 호출을 검사하지 않는 로컬 설정에는 AI 바인딩을 넣지 않는다.
+
+```sh
+node apps/cloud/test/api-flow.ts http://127.0.0.1:8896
+node apps/cloud/test/local-second-brain-flow.ts http://127.0.0.1:8896
+```
+
+가입 제한을 피하려고 운영 제한을 바꾸지 않는다. 여러 검사를 합칠 때는 두 번째 명령의 세 번째 인자로 합성 계정 fixture JSON(`base`, `email`, `otherEmail`, `password`) 경로를 전달해 기존 로컬 계정으로 로그인한다. fixture는 Git 밖에 권한 0600으로 보관한다. 429가 나오면 해당 실행을 중단하고 원인을 확인한다.
+
+AI 계약 검사는 테스트 대체 모델을 사용한다. 실제 모델 품질, Codex·로컬 모델 연결과 물리 기기 사용은 별도 검증 대상이다.
+
+Mac 계획 파서는 `script/check_workspace_plan.swift`로 앱 UI 없이 검사할 수 있다. `WorkspaceModels.swift`와 함께 임시 위치에 컴파일해 실행한다. 일상·프로젝트 행동, Markdown 제목·체크박스의 본문 추출, 날짜·반복 횟수와 기존 할 일 ID를 확인하며 앱의 전체 사용자 경로 검증을 대신하지 않는다.
+
 ## 소스 검사
 
 - Node.js 24 이상: 내장 TypeScript 및 SQLite 기능을 사용하는 로컬 실험 코드.

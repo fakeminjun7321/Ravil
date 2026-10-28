@@ -1,0 +1,6 @@
+{
+  "name": "@ravil/cloud", "private": true, "type": "module",
+  "scripts": {"dev": "wrangler dev --port 8788 --var APP_ORIGIN:http://127.0.0.1:8788", "check": "tsc --noEmit", "test": "node --experimental-strip-types --test test/*.test.ts", "deploy:preview": "wrangler deploy"},
+  "dependencies": {"better-auth": "1.7.7", "@block65/webcrypto-web-push": "2.0.0"},
+  "devDependencies": {"@cloudflare/workers-types": "5.20261004.1", "typescript": "5.9.3", "wrangler": "4.145.0"}
+}
